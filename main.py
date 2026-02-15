@@ -2,13 +2,12 @@ from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
-# Полный набор стилей с учетом всех правок по дизайну
+# Стили с удаленными настройками
 STYLE = '''
 <style>
     :root { --bg: #0a0a0a; --card: #161616; --accent: #ff4444; --green: #2ecc71; --tg: #24A1DE; --text: #ffffff; --subtext: #a1a1a1; }
     body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; min-height: 100vh; }
     
-    /* Сайдбар */
     .sidebar { width: 240px; background: var(--card); height: 100vh; padding: 25px 15px; box-sizing: border-box; display: flex; flex-direction: column; border-right: 1px solid #222; position: fixed; z-index: 100; }
     .logo-container { text-align: center; margin-bottom: 30px; }
     .logo-container img { width: 120px; height: 120px; border-radius: 18px; filter: drop-shadow(0 0 8px var(--accent)); }
@@ -21,7 +20,6 @@ STYLE = '''
     .btn-install { background: var(--green); color: black; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; font-size: 0.9rem; transition: 0.3s; }
     .btn-install:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(46, 204, 113, 0.3); }
 
-    /* Контент - всё поднято выше */
     .main { flex: 1; padding: 20px 40px; margin-left: 240px; } 
     .top-bar { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 25px; min-height: 45px; }
     .search-bar { background: #1a1a1a; border: 1px solid #333; padding: 10px 20px; border-radius: 12px; width: 400px; color: white; outline: none; transition: 0.3s; font-size: 0.9rem; }
@@ -32,7 +30,6 @@ STYLE = '''
     .heart-btn { cursor: pointer; font-size: 2rem; color: #333; transition: 0.3s; background: none; border: none; outline: none; }
     .heart-btn.liked { color: var(--accent); filter: drop-shadow(0 0 5px var(--accent)); }
 
-    /* Заголовок и сетка */
     h1 { margin-top: 0; margin-bottom: 20px; font-size: 1.8rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
     .card { background: var(--card); border-radius: 15px; border: 1px solid #222; padding: 20px; transition: 0.2s; text-decoration: none; color: inherit; display: flex; flex-direction: column; position: relative; cursor: pointer; min-height: 140px; }
@@ -41,11 +38,9 @@ STYLE = '''
     .card h3 { margin: 0 0 8px 0; color: var(--accent); }
     .card p { margin: 0 0 15px 0; font-size: 0.9rem; color: var(--subtext); line-height: 1.4; flex-grow: 1; }
 
-    /* Версия внизу слева */
     .card-footer { display: flex; align-items: center; margin-top: auto; }
     .card-version { background: #222; color: var(--subtext); padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; border: 1px solid #333; }
 
-    /* Кнопки в Избранном */
     .control-btns { display: flex; gap: 10px; }
     .ctrl-btn { background: #222; color: var(--subtext); border: 1px solid #333; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
     .ctrl-btn.active-mode { background: var(--accent); color: white; border-color: white; }
@@ -149,7 +144,6 @@ def get_sidebar(active_page, file_url=None):
         </div>
         <a href="/" class="nav-item {'active' if active_page == 'home' else ''}">Главная</a>
         <a href="/favs" class="nav-item {'active' if active_page == 'favs' else ''}">Понравившееся</a>
-        <a href="#" class="nav-item">Настройки</a>
         
         <div class="sidebar-bottom">
             <a href="https://t.me/hellokilaura" target="_blank" class="btn-tg">Наш Telegram</a>
@@ -180,6 +174,7 @@ def home():
         </div>{SCRIPTS}</body></html>
     ''')
 
+# Роуты /favs, /wurst и /meteor остаются такими же (просто удали из них вызов настроек в get_sidebar)
 @app.route('/favs')
 def favs():
     return render_template_string(f'''
