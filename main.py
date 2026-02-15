@@ -2,7 +2,7 @@ from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
-# Стили (добавил анимацию и стили для пустых избранных)
+# Стили (CSS)
 STYLE = '''
 <style>
     :root { --bg: #0a0a0a; --card: #161616; --accent: #ff4444; --green: #2ecc71; --text: #ffffff; --subtext: #a1a1a1; }
@@ -14,28 +14,35 @@ STYLE = '''
     .nav-item:hover, .nav-item.active { background: #222; color: white; }
     .btn-install { background: var(--green); color: black; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; margin-top: auto; transition: 0.3s; font-size: 0.9rem; }
     .btn-install:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(46, 204, 113, 0.4); }
+    
     .main { flex: 1; padding: 40px; margin-left: 240px; }
-    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+    .top-bar { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; min-height: 50px; }
+    .btn-back-abs { position: absolute; left: 0; color: var(--accent); text-decoration: none; font-weight: bold; }
+    
     .control-btns { display: flex; gap: 10px; }
-    .ctrl-btn { background: #222; color: var(--subtext); border: 1px solid #333; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
-    .ctrl-btn:hover { background: var(--accent); color: white; }
+    .ctrl-btn { background: #222; color: var(--subtext); border: 1px solid #333; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+    .ctrl-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-    .card { background: var(--card); border-radius: 15px; border: 1px solid #222; padding: 20px; transition: 0.3s; text-decoration: none; color: inherit; position: relative; }
+    .card { background: var(--card); border-radius: 15px; border: 1px solid #222; padding: 20px; transition: 0.3s; text-decoration: none; color: inherit; display: block; position: relative; }
     .card:hover { border-color: var(--accent); transform: translateY(-5px); }
     .card h3 { margin: 0 0 10px 0; color: var(--accent); }
-    .heart-btn { cursor: pointer; font-size: 2rem; color: #333; transition: 0.3s; background: none; border: none; outline: none; padding: 0; line-height: 1; }
+    
+    .btn-remove-card { margin-top: 15px; background: #333; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.75rem; width: 100%; }
+    .btn-remove-card:hover { background: #444; }
+
+    .heart-btn { cursor: pointer; font-size: 2rem; color: #333; transition: 0.3s; background: none; border: none; outline: none; padding: 0; }
     .heart-btn.liked { color: var(--accent); filter: drop-shadow(0 0 5px var(--accent)); }
     .empty-msg { color: var(--subtext); text-align: center; grid-column: 1 / -1; margin-top: 50px; }
 </style>
 '''
 
-# JavaScript для работы с избранным
+# JavaScript (добавлена логика удаления одного элемента)
 SCRIPTS = '''
 <script>
     function toggleLike(id, name, desc) {
         let favs = JSON.parse(localStorage.getItem('hk_favs') || '[]');
         const index = favs.findIndex(item => item.id === id);
-        
         if (index > -1) {
             favs.splice(index, 1);
             document.getElementById('heart-' + id)?.classList.remove('liked');
@@ -53,21 +60,29 @@ SCRIPTS = '''
         }
     }
 
+    function removeOne(id) {
+        let favs = JSON.parse(localStorage.getItem('hk_favs') || '[]');
+        favs = favs.filter(item => item.id !== id);
+        localStorage.setItem('hk_favs', JSON.stringify(favs));
+        renderFavs();
+    }
+
     function renderFavs() {
         const grid = document.getElementById('fav-grid');
         if (!grid) return;
         let favs = JSON.parse(localStorage.getItem('hk_favs') || '[]');
-        
         if (favs.length === 0) {
-            grid.innerHTML = '<div class="empty-msg">Тут пока пусто... Лайкни что-нибудь!</div>';
+            grid.innerHTML = '<div class="empty-msg">Тут пока пусто...</div>';
             return;
         }
-        
         grid.innerHTML = favs.map(item => `
-            <a href="/${item.id}" class="card">
-                <h3>${item.name}</h3>
-                <p>${item.desc}</p>
-            </a>
+            <div class="card">
+                <a href="/${item.id}" style="text-decoration:none; color:inherit;">
+                    <h3>${item.name}</h3>
+                    <p>${item.desc}</p>
+                </a>
+                <button class="btn-remove-card" onclick="removeOne('${item.id}')">Убрать из списка</button>
+            </div>
         `).join('');
     }
 
@@ -78,8 +93,8 @@ SCRIPTS = '''
 </script>
 '''
 
-def get_sidebar(active_page, show_install=False):
-    install_btn = f'''<a href="https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-nk.jar" class="btn-install" download>Установить .jar</a>''' if show_install else ''
+def get_sidebar(active_page, file_url=None):
+    install_btn = f'''<a href="{file_url}" class="btn-install" download>Установить .jar</a>''' if file_url else ''
     return f'''
     <div class="sidebar">
         <div class="logo-container"><img src="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png" alt="HK"></div>
@@ -110,6 +125,10 @@ def home():
                         <h3>Wurst</h3>
                         <p>Отличный клиент для выживания с друзьями и удобный интерфейс.</p>
                     </a>
+                    <a href="/meteor" class="card">
+                        <h3>Meteor Client</h3>
+                        <p>Достаточно хороший чит для пвп и подходит для игры с друзьями.</p>
+                    </a>
                 </div>
             </div>
             {SCRIPTS}
@@ -132,9 +151,11 @@ def favs():
             {get_sidebar('favs')}
             <div class="main">
                 <div class="top-bar">
-                    <a href="/" style="color: var(--accent); text-decoration: none; font-weight: bold;">← Назад</a>
+                    <a href="/" class="btn-back-abs">← Назад</a>
                     <div class="control-btns">
                         <button class="ctrl-btn" onclick="clearAllFavs()">Убрать всё</button>
+                        <button class="ctrl-btn">Убрать одно</button>
+                        <button class="ctrl-btn">Убрать выделенное</button>
                     </div>
                 </div>
                 <h1>Понравившееся</h1>
@@ -153,18 +174,44 @@ def wurst_page():
         <head>
             <meta charset="UTF-8">
             <link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png" type="image/png">
-            <title>HK - Wurst Client</title>
+            <title>HK - Wurst</title>
             {STYLE}
         </head>
         <body onload="loadHeart('wurst')">
-            {get_sidebar('wurst', show_install=True)}
+            {get_sidebar('wurst', 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-nk.jar')}
             <div class="main">
                 <div class="top-bar">
-                    <a href="/" style="color: var(--accent); text-decoration: none; font-weight: bold;">← Назад на главную</a>
-                    <button id="heart-wurst" class="heart-btn" onclick="toggleLike('wurst', 'Wurst', 'Отличный клиент для выживания.')">❤</button>
+                    <a href="/" class="btn-back-abs">← Назад на главную</a>
+                    <button id="heart-wurst" class="heart-btn" onclick="toggleLike('wurst', 'Wurst', 'Для выживания с друзьями.')">❤</button>
                 </div>
                 <h1>Wurst Client</h1>
-                <p style="color: var(--subtext); font-size: 1.1rem;">Сборка <b>1.21.11-nk</b>.</p>
+                <p>Версия 1.21.11-nk.</p>
+            </div>
+            {SCRIPTS}
+        </body>
+        </html>
+    ''')
+
+@app.route('/meteor')
+def meteor_page():
+    return render_template_string(f'''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png" type="image/png">
+            <title>HK - Meteor</title>
+            {STYLE}
+        </head>
+        <body onload="loadHeart('meteor')">
+            {get_sidebar('meteor', 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.11-nk.jar')}
+            <div class="main">
+                <div class="top-bar">
+                    <a href="/" class="btn-back-abs">← Назад на главную</a>
+                    <button id="heart-meteor" class="heart-btn" onclick="toggleLike('meteor', 'Meteor Client', 'Лучший для PVP.')">❤</button>
+                </div>
+                <h1>Meteor Client</h1>
+                <p>Версия 1.21.11-nk. Описание: Достаточно хороший чит для пвп.</p>
             </div>
             {SCRIPTS}
         </body>
