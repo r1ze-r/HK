@@ -2,7 +2,7 @@ from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
-# Стили с удаленными настройками
+# Тот самый имбовый дизайн
 STYLE = '''
 <style>
     :root { --bg: #0a0a0a; --card: #161616; --accent: #ff4444; --green: #2ecc71; --tg: #24A1DE; --text: #ffffff; --subtext: #a1a1a1; }
@@ -34,25 +34,16 @@ STYLE = '''
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
     .card { background: var(--card); border-radius: 15px; border: 1px solid #222; padding: 20px; transition: 0.2s; text-decoration: none; color: inherit; display: flex; flex-direction: column; position: relative; cursor: pointer; min-height: 140px; }
     .card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .card.selected { border: 2px solid var(--accent) !important; box-shadow: 0 0 10px rgba(255, 68, 68, 0.2); }
     .card h3 { margin: 0 0 8px 0; color: var(--accent); }
     .card p { margin: 0 0 15px 0; font-size: 0.9rem; color: var(--subtext); line-height: 1.4; flex-grow: 1; }
 
     .card-footer { display: flex; align-items: center; margin-top: auto; }
     .card-version { background: #222; color: var(--subtext); padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; border: 1px solid #333; }
-
-    .control-btns { display: flex; gap: 10px; }
-    .ctrl-btn { background: #222; color: var(--subtext); border: 1px solid #333; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
-    .ctrl-btn.active-mode { background: var(--accent); color: white; border-color: white; }
-    .btn-delete-multi { position: absolute; right: 0; background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; }
 </style>
 '''
 
 SCRIPTS = '''
 <script>
-    let mode = 'none';
-    let selectedItems = new Set();
-
     function filterCheats() {
         let input = document.getElementById('search').value.toLowerCase();
         let cards = document.querySelectorAll('.grid .card');
@@ -67,65 +58,12 @@ SCRIPTS = '''
         const index = favs.findIndex(item => item.id === id);
         if (index > -1) {
             favs.splice(index, 1);
-            document.getElementById('heart-'+id)?.classList.remove('liked');
+            document.getElementById('heart-'+id).classList.remove('liked');
         } else {
             favs.push({id, name});
-            document.getElementById('heart-'+id)?.classList.add('liked');
+            document.getElementById('heart-'+id).classList.add('liked');
         }
         localStorage.setItem('hk_favs', JSON.stringify(favs));
-    }
-
-    function setMode(newMode) {
-        mode = (mode === newMode) ? 'none' : newMode;
-        selectedItems.clear();
-        document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active-mode'));
-        if (mode !== 'none') document.getElementById('mode-' + mode).classList.add('active-mode');
-        renderFavs();
-    }
-
-    function handleCardClick(id, event) {
-        if (mode === 'one') {
-            removeOne(id);
-        } else if (mode === 'multi') {
-            event.preventDefault();
-            if (selectedItems.has(id)) selectedItems.delete(id);
-            else selectedItems.add(id);
-            renderFavs();
-        } else {
-            window.location.href = '/' + id;
-        }
-    }
-
-    function removeOne(id) {
-        let favs = JSON.parse(localStorage.getItem('hk_favs') || '[]');
-        localStorage.setItem('hk_favs', JSON.stringify(favs.filter(i => i.id !== id)));
-        renderFavs();
-    }
-
-    function deleteSelected() {
-        let favs = JSON.parse(localStorage.getItem('hk_favs') || '[]');
-        localStorage.setItem('hk_favs', JSON.stringify(favs.filter(i => !selectedItems.has(i.id))));
-        selectedItems.clear();
-        setMode('none');
-        renderFavs();
-    }
-
-    function renderFavs() {
-        const grid = document.getElementById('fav-grid');
-        if (!grid) return;
-        let favs = JSON.parse(localStorage.getItem('hk_favs') || '[]');
-        document.getElementById('btn-delete-all').style.display = (mode === 'multi' && selectedItems.size > 0) ? 'block' : 'none';
-        
-        if (favs.length === 0) {
-            grid.innerHTML = '<div style="color:var(--subtext); grid-column:1/-1; text-align:center; margin-top:40px;">В списке пока ничего нет...</div>';
-            return;
-        }
-        grid.innerHTML = favs.map(item => `
-            <div class="card ${selectedItems.has(item.id) ? 'selected' : ''}" onclick="handleCardClick('${item.id}', event)">
-                <h3>${item.name}</h3>
-                <div class="card-footer"><span class="card-version">1.21.11</span></div>
-            </div>
-        `).join('');
     }
 
     function loadHeartState(id) {
@@ -144,7 +82,6 @@ def get_sidebar(active_page, file_url=None):
         </div>
         <a href="/" class="nav-item {'active' if active_page == 'home' else ''}">Главная</a>
         <a href="/favs" class="nav-item {'active' if active_page == 'favs' else ''}">Понравившееся</a>
-        
         <div class="sidebar-bottom">
             <a href="https://t.me/hellokilaura" target="_blank" class="btn-tg">Наш Telegram</a>
             {install_btn}
@@ -174,42 +111,26 @@ def home():
         </div>{SCRIPTS}</body></html>
     ''')
 
-# Роуты /favs, /wurst и /meteor остаются такими же (просто удали из них вызов настроек в get_sidebar)
-@app.route('/favs')
-def favs():
-    return render_template_string(f'''
-        <!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Понравившееся</title>{STYLE}</head>
-        <body onload="renderFavs()">{get_sidebar('favs')}<div class="main">
-            <div class="top-bar"><a href="/" class="btn-back-abs">← Назад</a>
-                <div class="control-btns">
-                    <button class="ctrl-btn" onclick="localStorage.setItem('hk_favs', '[]'); renderFavs()">Убрать всё</button>
-                    <button id="mode-one" class="ctrl-btn" onclick="setMode('one')">Убрать одно</button>
-                    <button id="mode-multi" class="ctrl-btn" onclick="setMode('multi')">Убрать выделенное</button>
-                </div>
-                <button id="btn-delete-all" class="btn-delete-multi" onclick="deleteSelected()">Убрать</button>
-            </div>
-            <h1>Понравившееся</h1><div class="grid" id="fav-grid"></div>
-        </div>{SCRIPTS}</body></html>
-    ''')
-
 @app.route('/wurst')
 def wurst_page():
+    # ИСПРАВЛЕНО: nk -> hk в ссылке
     return render_template_string(f'''
         <!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Wurst</title>{STYLE}</head>
-        <body onload="loadHeartState('wurst')">{get_sidebar('wurst', 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-nk.jar')}
+        <body onload="loadHeartState('wurst')">{get_sidebar('wurst', 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar')}
         <div class="main"><div class="top-bar"><a href="/" class="btn-back-abs">← Назад на главную</a>
         <div class="heart-container"><button id="heart-wurst" class="heart-btn" onclick="toggleLike('wurst', 'Wurst')">❤</button></div>
-        </div><h1>Wurst Client 1.21.11-nk</h1><p style="color:var(--subtext); font-size:1.1rem; line-height:1.6;">Легендарная классика для тех, кто любит проводить время в Minecraft с друзьями. Понятный интерфейс и стабильная работа.</p></div>{SCRIPTS}</body></html>
+        </div><h1>Wurst Client 1.21.11-hk</h1><p style="color:var(--subtext); font-size:1.1rem; line-height:1.6;">Легендарная классика для тех, кто любит проводить время в Minecraft с друзьями. Понятный интерфейс и стабильная работа.</p></div>{SCRIPTS}</body></html>
     ''')
 
 @app.route('/meteor')
 def meteor_page():
+    # ИСПРАВЛЕНО: nk -> hk в ссылке
     return render_template_string(f'''
         <!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Meteor</title>{STYLE}</head>
-        <body onload="loadHeartState('meteor')">{get_sidebar('meteor', 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.11-nk.jar')}
+        <body onload="loadHeartState('meteor')">{get_sidebar('meteor', 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.11-hk.jar')}
         <div class="main"><div class="top-bar"><a href="/" class="btn-back-abs">← Назад на главную</a>
         <div class="heart-container"><button id="heart-meteor" class="heart-btn" onclick="toggleLike('meteor', 'Meteor Client')">❤</button></div>
-        </div><h1>Meteor Client 1.21.11-nk</h1><p style="color:var(--subtext); font-size:1.1rem; line-height:1.6;">Отличный инструмент для совместных PVP-потасовок и выживания. Сбалансированный набор функций и высокая производительность.</p></div>{SCRIPTS}</body></html>
+        </div><h1>Meteor Client 1.21.11-hk</h1><p style="color:var(--subtext); font-size:1.1rem; line-height:1.6;">Отличный инструмент для совместных PVP-потасовок и выживания. Сбалансированный набор функций и высокая производительность.</p></div>{SCRIPTS}</body></html>
     ''')
 
 if __name__ == "__main__":
