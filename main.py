@@ -124,10 +124,10 @@ def wurst_page():
 
 @app.route('/meteor')
 def meteor_page():
-    # ИСПРАВЛЕНО: nk -> hk в ссылке
+    # Заменил прямую ссылку на ссылку-загрузчик
     return render_template_string(f'''
         <!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Meteor</title>{STYLE}</head>
-        <body onload="loadHeartState('meteor')">{get_sidebar('meteor', 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.11-hk.jar')}
+        <body onload="loadHeartState('meteor')">{get_sidebar('meteor', 'https://github.com/r1ze-r/HK/raw/main/meteor-client-1.21.11-hk.jar')}
         <div class="main"><div class="top-bar"><a href="/" class="btn-back-abs">← Назад на главную</a>
         <div class="heart-container"><button id="heart-meteor" class="heart-btn" onclick="toggleLike('meteor', 'Meteor Client')">❤</button></div>
         </div><h1>Meteor Client 1.21.11-hk</h1><p style="color:var(--subtext); font-size:1.1rem; line-height:1.6;">Отличный инструмент для совместных PVP-потасовок и выживания. Сбалансированный набор функций и высокая производительность.</p></div>{SCRIPTS}</body></html>
