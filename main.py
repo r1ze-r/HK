@@ -2,30 +2,26 @@ from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
-# Полный набор стилей
 STYLE = '''
 <style>
     :root { --bg: #0a0a0a; --card: #161616; --accent: #ff4444; --green: #2ecc71; --tg: #24A1DE; --text: #ffffff; --subtext: #a1a1a1; }
     body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; min-height: 100vh; }
     
-    /* Сайдбар */
     .sidebar { width: 240px; background: var(--card); height: 100vh; padding: 25px 15px; box-sizing: border-box; display: flex; flex-direction: column; border-right: 1px solid #222; position: fixed; z-index: 100; }
     .logo-container { text-align: center; margin-bottom: 30px; }
     .logo-container img { width: 120px; height: 120px; border-radius: 18px; filter: drop-shadow(0 0 8px var(--accent)); }
     .nav-item { padding: 10px 15px; border-radius: 8px; cursor: pointer; color: var(--subtext); transition: 0.2s; text-decoration: none; margin-bottom: 5px; font-weight: 500; display: block; font-size: 0.9rem; }
     .nav-item:hover, .nav-item.active { background: #222; color: white; }
     
-    /* Кнопки внизу сайдбара */
     .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
     .btn-tg { background: var(--tg); color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; font-size: 0.85rem; transition: 0.3s; }
     .btn-tg:hover { filter: brightness(1.2); transform: translateY(-2px); }
     .btn-install { background: var(--green); color: black; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; font-size: 0.9rem; transition: 0.3s; }
     .btn-install:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(46, 204, 113, 0.3); }
 
-    /* Контент */
-    .main { flex: 1; padding: 40px; margin-left: 240px; }
-    .top-bar { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; min-height: 60px; }
-    .search-bar { background: #1a1a1a; border: 1px solid #333; padding: 12px 20px; border-radius: 12px; width: 400px; color: white; outline: none; transition: 0.3s; font-size: 0.9rem; }
+    .main { flex: 1; padding: 20px 40px; margin-left: 240px; } /* Уменьшил padding сверху */
+    .top-bar { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 20px; min-height: 40px; } /* Поднял выше */
+    .search-bar { background: #1a1a1a; border: 1px solid #333; padding: 10px 20px; border-radius: 12px; width: 400px; color: white; outline: none; transition: 0.3s; font-size: 0.9rem; }
     .search-bar:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 68, 68, 0.15); }
     
     .btn-back-abs { position: absolute; left: 0; color: var(--accent); text-decoration: none; font-weight: bold; }
@@ -33,13 +29,13 @@ STYLE = '''
     .heart-btn { cursor: pointer; font-size: 2rem; color: #333; transition: 0.3s; background: none; border: none; outline: none; }
     .heart-btn.liked { color: var(--accent); filter: drop-shadow(0 0 5px var(--accent)); }
 
-    /* Кнопки управления в Избранном */
     .control-btns { display: flex; gap: 10px; }
     .ctrl-btn { background: #222; color: var(--subtext); border: 1px solid #333; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
     .ctrl-btn.active-mode { background: var(--accent); color: white; border-color: white; }
     .btn-delete-multi { position: absolute; right: 0; background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; }
 
-    /* Сетка */
+    h1 { margin-top: 0; margin-bottom: 20px; font-size: 1.8rem; } /* Поднял заголовок */
+
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
     .card { background: var(--card); border-radius: 15px; border: 1px solid #222; padding: 20px; transition: 0.2s; text-decoration: none; color: inherit; display: block; position: relative; cursor: pointer; }
     .card:hover { border-color: var(--accent); transform: translateY(-3px); }
@@ -49,7 +45,6 @@ STYLE = '''
 </style>
 '''
 
-# JavaScript для функционала
 SCRIPTS = '''
 <script>
     let mode = 'none';
@@ -148,7 +143,7 @@ def get_sidebar(active_page, file_url=None):
         <a href="#" class="nav-item">Настройки</a>
         
         <div class="sidebar-bottom">
-            <a href="https://t.me/твой_канал" target="_blank" class="btn-tg">Наш Telegram</a>
+            <a href="https://t.me/hellokilaura" target="_blank" class="btn-tg">Наш Telegram</a>
             {install_btn}
         </div>
     </div>
@@ -160,7 +155,7 @@ def home():
         <!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Главная</title>{STYLE}</head>
         <body>{get_sidebar('home')}<div class="main">
             <div class="top-bar"><input type="text" id="search" class="search-bar" placeholder="Поиск читов..." onkeyup="filterCheats()"></div>
-            <h1>Наши проекты</h1>
+            <h1>Главное меню</h1>
             <div class="grid">
                 <a href="/wurst" class="card"><h3>Wurst</h3><p>Удобный клиент для выживания с друзьями.</p></a>
                 <a href="/meteor" class="card"><h3>Meteor Client</h3><p>Стабильная сборка для совместного фана.</p></a>
