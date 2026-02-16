@@ -375,57 +375,42 @@ def detail(id):
 
 @app.route('/cheat/<id>')
 def detail(id):
-    # 1. Безопасное получение данных из базы
     item = DATABASE.get(id)
-    if not item: 
-        return "Cheat not found", 404
+    if not item: return "404", 404
     
-    # 2. Логика выбора видео
-    # Если в ссылке есть .zip, ищем видос для архивов, иначе — основной
-    is_zip = str(item.get('file_url', '')).lower().endswith('.zip')
-    video_file = "2026-02-16-22-54-44.mp4" 
+    # Видео будет одно для всех, как ты и просил
+    video_file = "2026-02-16-22-54-44.mp4"
 
-    # 3. Собираем HTML по кусочкам (самый надежный способ против ошибки 500)
-    html = []
-    html.append('<html><head>' + str(STYLE) + '</head><body>')
-    html.append('<div class="bg-glow"></div>')
-    html.append(get_nav("detail"))
-    html.append('<div class="container" style="padding-top:10px;">')
-    
-    # Панель навигации (Назад и Сердечко)
-    html.append('<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">')
-    html.append('<a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад к списку</a>')
-    html.append('<button class="heart-btn" onclick="updateFavs(\'' + str(id) + '\', \'' + str(item['name']) + '\')">❤</button>')
-    html.append('</div>')
-    
-    # Основной контент (Wurst Client и описание)
-    html.append('<div class="detail-view" style="display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">')
-    html.append('<h1 style="font-size:2.2rem; margin:0;">' + str(item['name']) + '</h1>')
-    
-    html.append('<div class="dl-section" style="width:100%; padding:20px; background:rgba(20,20,20,0.6); border-radius:24px; border:1px solid #222;">')
-    html.append('<span class="version-tag" style="display:inline-block; margin-bottom:10px;">Версия: ' + str(item['ver']) + '</span>')
-    html.append('<p style="color:#aaa; font-size:1rem; margin-bottom:20px; line-height:1.4;">' + str(item['desc']) + '</p>')
-    
-    # Кнопка скачивания
-    html.append('<button onclick="forceDownload(\'' + str(item['file_url']) + '\', \'' + str(item['name']) + '\')" class="big-dl-btn" style="width:100%; max-width:320px;">СКАЧАТЬ ОТ HK</button>')
-    
-    # Видео-инструкция (статичный плеер)
-    html.append('<div style="margin-top:20px; width:100%; max-width:320px; border-radius:15px; overflow:hidden; border:1px solid #333; box-shadow: 0 0 15px var(--accent-glow);">')
-    html.append('<video width="100%" height="auto" controls style="display:block;">')
-    html.append('<source src="/static/' + video_file + '" type="video/mp4">')
-    html.append('Ваш браузер не поддерживает видео.')
-    html.append('</video>')
-    html.append('<div style="background:#151515; padding:8px; font-size:0.75rem; color:#666; font-weight:700;">Гайд по установке</div>')
-    html.append('</div>')
-    
-    html.append('</div>') # Конец dl-section
-    html.append('</div>') # Конец detail-view
-    html.append('</div>') # Конец container
-    html.append(str(SCRIPTS))
-    html.append('</body></html>')
-    
-    # Склеиваем всё в одну строку для вывода
-    return render_template_string("".join(html))
+    return render_template_string(f'''
+    <html><head>{STYLE}</head><body>
+        <div class="bg-glow"></div>
+        {get_nav("detail")}
+        <div class="container" style="padding-top: 20px;">
+            <div class="detail-view" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                    <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
+                    <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
+                </div>
+
+                <h1 style="font-size:3rem; margin:0;">{item['name']}</h1>
+
+                <div class="dl-section" style="padding: 25px; display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%;">
+                    <span class="version-tag">Версия: {item['ver']}</span>
+                    <p style="font-size:1.1rem; color:#ccc; text-align:center; margin:0;">{item['desc']}</p>
+                    
+                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ ОТ HK</button>
+
+                    <div style="width: 100%; max-width: 400px; border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border); margin-top: 10px;">
+                        <video width="100%" height="auto" controls style="display: block;">
+                            <source src="/static/{video_file}" type="video/mp4">
+                            Браузер не тянет видео
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {SCRIPTS}
+    </body></html>''')
 
 if __name__ == '__main__':
     app.run(debug=True)
