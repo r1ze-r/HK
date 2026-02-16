@@ -2,7 +2,7 @@ from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
-# Твой лютейший дизайн
+# Твой лютейший дизайн + АДАПТИВНОСТЬ
 STYLE = '''
 <style>
     :root { --bg: #0a0a0a; --card: #161616; --accent: #ff4444; --green: #2ecc71; --tg: #24A1DE; --text: #ffffff; --subtext: #a1a1a1; }
@@ -39,10 +39,26 @@ STYLE = '''
     .card p { margin: 0 0 15px 0; font-size: 0.9rem; color: var(--subtext); line-height: 1.4; flex-grow: 1; }
     .card-footer { display: flex; align-items: center; margin-top: auto; }
     .card-version { background: #222; color: var(--subtext); padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; border: 1px solid #333; }
+
+    /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+    @media (max-width: 850px) {
+        body { flex-direction: column; }
+        .sidebar { 
+            width: 100%; height: auto; position: relative; border-right: none; 
+            border-bottom: 1px solid #222; padding: 15px; 
+        }
+        .logo-container img { width: 60px; height: 60px; margin-bottom: 0; }
+        .logo-container { margin-bottom: 15px; }
+        .main { margin-left: 0; padding: 20px; }
+        .grid { grid-template-columns: 1fr; }
+        .btn-back-abs { position: relative; margin-bottom: 10px; display: block; }
+        .top-bar { flex-direction: column; align-items: flex-start; }
+        .heart-container { position: relative; margin-top: 10px; right: auto; }
+    }
 </style>
 '''
 
-# Скрипты для лайков и ПРИНУДИТЕЛЬНОГО скачивания
+# Скрипты (без изменений)
 SCRIPTS = '''
 <script>
     async function forceDownload(url, filename) {
@@ -84,7 +100,6 @@ SCRIPTS = '''
 def get_sidebar(active_page, file_url=None):
     if file_url:
         filename = file_url.split('/')[-1]
-        # Используем кнопку с JS функцией для скачивания
         install_btn = f'<button onclick="forceDownload(\'{file_url}\', \'{filename}\')" class="btn-install">Скачать .jar</button>'
     else:
         install_btn = ''
@@ -105,8 +120,9 @@ def get_sidebar(active_page, file_url=None):
 
 @app.route('/')
 def home():
+    # Добавил meta name="viewport" во все страницы
     return render_template_string(f'''
-        <!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Главная</title>{STYLE}</head>
+        <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Главная</title>{STYLE}</head>
         <body>{get_sidebar('home')}<div class="main">
             <h1>Главное меню</h1>
             <div class="grid">
@@ -120,6 +136,11 @@ def home():
                     <p>Стабильная сборка для совместного фана.</p>
                     <div class="card-footer"><span class="card-version">1.21.11</span></div>
                 </a>
+                <a href="/norisk" class="card">
+                    <h3>NoRisk (Нурик)</h3>
+                    <p>Тот самый клиент из ТТ. Буст ФПС и бесплатные плащи.</p>
+                    <div class="card-footer"><span class="card-version">Актуально</span></div>
+                </a>
             </div>
         </div>{SCRIPTS}</body></html>
     ''')
@@ -128,7 +149,7 @@ def home():
 def wurst_page():
     file_url = 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
     return render_template_string(f'''
-        <!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Wurst</title>{STYLE}</head>
+        <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Wurst</title>{STYLE}</head>
         <body onload="loadHeartState('wurst')">{get_sidebar('wurst', file_url)}
         <div class="main"><div class="top-bar"><a href="/" class="btn-back-abs">← Назад на главную</a>
         <div class="heart-container"><button id="heart-wurst" class="heart-btn" onclick="toggleLike('wurst', 'Wurst')">❤</button></div>
@@ -140,7 +161,7 @@ def wurst_page():
 def meteor_page():
     file_url = 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.11-hk.jar'
     return render_template_string(f'''
-        <!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Meteor</title>{STYLE}</head>
+        <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Meteor</title>{STYLE}</head>
         <body onload="loadHeartState('meteor')">{get_sidebar('meteor', file_url)}
         <div class="main"><div class="top-bar"><a href="/" class="btn-back-abs">← Назад на главную</a>
         <div class="heart-container"><button id="heart-meteor" class="heart-btn" onclick="toggleLike('meteor', 'Meteor Client')">❤</button></div>
@@ -148,10 +169,23 @@ def meteor_page():
         <p style="color:var(--subtext); font-size:1.1rem; line-height:1.6;">Топовый чит для PVP и анархии. Версия HK оптимизирована для быстрой загрузки.</p></div>{SCRIPTS}</body></html>
     ''')
 
+@app.route('/norisk')
+def norisk_page():
+    # Ссылка на оф сайт для Нурика
+    file_url = 'https://norisk.gg/' 
+    return render_template_string(f'''
+        <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - NoRisk</title>{STYLE}</head>
+        <body onload="loadHeartState('norisk')">{get_sidebar('norisk', file_url)}
+        <div class="main"><div class="top-bar"><a href="/" class="btn-back-abs">← Назад на главную</a>
+        <div class="heart-container"><button id="heart-norisk" class="heart-btn" onclick="toggleLike('norisk', 'NoRisk')">❤</button></div>
+        </div><h1>NoRisk Client (Нурик)</h1>
+        <p style="color:var(--subtext); font-size:1.1rem; line-height:1.6;">Популярный клиент с мощной оптимизацией FPS и встроенными мини-играми. Идеально для серверов.</p></div>{SCRIPTS}</body></html>
+    ''')
+
 @app.route('/favs')
 def favs_page():
     return render_template_string(f'''
-        <!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Понравившееся</title>{STYLE}</head>
+        <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Понравившееся</title>{STYLE}</head>
         <body>{get_sidebar('favs')}<div class="main"><h1>Понравившееся</h1><div id="favs-list" class="grid"></div></div>
         {SCRIPTS}
         <script>
