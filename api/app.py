@@ -2,7 +2,7 @@ from flask import Flask, render_template_string, jsonify
 
 app = Flask(__name__)
 
-# --- CONFIG DATA (Meteor & Wurst ONLY) ---
+# --- CONFIG DATA ---
 DATABASE = {
     'wurst': {
         'name': 'Wurst Client',
@@ -50,12 +50,7 @@ STYLE = '''
         line-height: 1.6;
         overflow-x: hidden;
         min-height: 100vh;
-        scrollbar-width: thin;
-        scrollbar-color: var(--accent) var(--bg);
     }
-
-    body::-webkit-scrollbar { width: 6px; }
-    body::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
     .bg-glow {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -68,54 +63,70 @@ STYLE = '''
         background: var(--glass);
         backdrop-filter: blur(20px);
         border-bottom: 1px solid var(--card-border);
-        padding: 20px 0;
+        padding: 15px 0;
     }
 
     .nav-container {
         max-width: 1200px; margin: 0 auto;
-        display: flex; justify-content: center; align-items: center; gap: 15px;
+        display: flex; justify-content: space-between; align-items: center;
         padding: 0 20px;
     }
 
+    .logo {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: var(--transition);
+    }
+
+    .logo:hover { opacity: 0.8; }
+
+    .logo-icon {
+        width: 35px; height: 35px;
+        background: var(--accent);
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 900; color: black; font-size: 1.2rem;
+        box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .logo-text {
+        font-weight: 900; font-size: 1.4rem; letter-spacing: -1px; color: white;
+    }
+
+    .nav-links { display: flex; gap: 15px; }
+
     .nav-btn {
-        padding: 12px 28px; border-radius: 14px;
+        padding: 10px 22px; border-radius: 12px;
         text-decoration: none; color: var(--text-dim);
-        font-weight: 700; font-size: 1rem;
+        font-weight: 700; font-size: 0.9rem;
         background: #151515; border: 1px solid #252525;
         transition: var(--transition);
-        display: flex; align-items: center; gap: 8px;
     }
 
     .nav-btn:hover, .nav-btn.active {
         color: white; background: #222; border-color: var(--accent);
         box-shadow: 0 0 20px var(--accent-glow);
-        transform: translateY(-2px);
     }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
-
     .hero { text-align: center; margin-bottom: 70px; }
     .hero h1 { 
         font-size: 4rem; font-weight: 900; letter-spacing: -2px; 
-        margin-bottom: 15px; background: linear-gradient(to bottom, #fff 0%, #666 100%);
+        background: linear-gradient(to bottom, #fff 0%, #666 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    .search-wrapper { position: relative; width: 100%; max-width: 500px; margin: 30px auto; }
     .search-input {
-        width: 100%; background: #111; border: 1px solid #222;
+        width: 100%; max-width: 500px; background: #111; border: 1px solid #222;
         padding: 18px 30px; border-radius: 20px; color: white;
         font-size: 1.1rem; outline: none; transition: var(--transition);
-        text-align: center;
+        display: block; margin: 30px auto; text-align: center;
     }
     .search-input:focus { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); }
 
-    .cheat-grid {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-        gap: 30px; animation: fadeInUp 0.8s ease;
-    }
-
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; }
 
     .cheat-card {
         background: var(--card-bg); border: 1px solid var(--card-border);
@@ -123,20 +134,9 @@ STYLE = '''
         transition: var(--transition); cursor: pointer;
         display: flex; flex-direction: column; overflow: hidden;
     }
-
-    .cheat-card::before {
-        content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(800px circle at var(--x) var(--y), rgba(255,255,255,0.06), transparent 40%);
-        pointer-events: none;
-    }
-
-    .cheat-card:hover {
-        border-color: #444; transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
+    .cheat-card:hover { transform: translateY(-10px); border-color: #444; }
 
     .cheat-card h3 { font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-bottom: 12px; }
-    
     .tag-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
     .tag { font-size: 0.7rem; font-weight: 700; background: #1a1a1a; padding: 4px 12px; border-radius: 6px; color: #666; text-transform: uppercase; }
 
@@ -154,30 +154,39 @@ STYLE = '''
     .tg-anchor { position: fixed; left: 40px; bottom: 40px; z-index: 999; }
     .tg-btn {
         background: var(--tg-color); color: white; padding: 18px 30px; border-radius: 20px;
-        text-decoration: none; font-weight: 900; display: flex; align-items: center; gap: 12px;
-        box-shadow: 0 10px 30px rgba(36, 161, 222, 0.4); transition: 0.3s;
+        text-decoration: none; font-weight: 900; box-shadow: 0 10px 30px rgba(36, 161, 222, 0.4);
     }
 
-    .detail-view { display: flex; flex-direction: column; gap: 40px; }
-    .dl-section { width: 100%; padding: 40px; background: var(--card-bg); border-radius: 30px; border: 1px solid #222; }
+    .dl-section { padding: 40px; background: var(--card-bg); border-radius: 30px; border: 1px solid #222; text-align: center; }
     .big-dl-btn {
         background: var(--green); color: black; padding: 25px 60px;
         border-radius: 20px; text-decoration: none; font-weight: 900;
-        font-size: 1.5rem; display: inline-block; cursor: pointer; border: none;
-        transition: var(--transition);
+        font-size: 1.5rem; cursor: pointer; border: none; transition: 0.3s;
     }
     .big-dl-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(46, 204, 113, 0.4); }
 
     @media (max-width: 800px) {
+        .nav-container { flex-direction: column; gap: 15px; }
         .hero h1 { font-size: 2.5rem; }
-        .tg-anchor { left: 20px; bottom: 20px; right: 20px; }
-        .tg-btn { justify-content: center; width: 100%; }
-        .cheat-grid { grid-template-columns: 1fr; }
     }
 </style>
 '''
 
-# --- ENGINE SCRIPTS (С ФИКСОМ ИМЕНИ ФАЙЛА HK) ---
+HEADER_HTML = '''
+<header>
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <div class="logo-icon">HK</div>
+            <div class="logo-text">HUB</div>
+        </a>
+        <div class="nav-links">
+            <a href="/" class="nav-btn {{ 'active' if page == 'home' else '' }}">Главная</a>
+            <a href="/favs" class="nav-btn {{ 'active' if page == 'favs' else '' }}">Понравившееся</a>
+        </div>
+    </div>
+</header>
+'''
+
 SCRIPTS = '''
 <script>
     function getFavs() { return JSON.parse(localStorage.getItem('hk_v3_favs') || '[]'); }
@@ -185,29 +194,20 @@ SCRIPTS = '''
     function updateFavs(id, name, isFavPage = false) {
         let favs = getFavs();
         let index = favs.findIndex(item => item.id === id);
-        
         if (index > -1) {
             favs.splice(index, 1);
             if(isFavPage) {
                 const card = document.getElementById(`card-fav-${id}`);
                 if(card) {
-                    card.style.transform = 'scale(0.8) translateY(20px)';
                     card.style.opacity = '0';
-                    setTimeout(() => { 
-                        card.remove();
-                        if(getFavs().length === 0) location.reload();
-                    }, 400);
+                    setTimeout(() => { card.remove(); if(getFavs().length === 0) location.reload(); }, 400);
                 }
             }
         } else {
             favs.push({id: id, name: name});
         }
-        
         localStorage.setItem('hk_v3_favs', JSON.stringify(favs));
-        
-        document.querySelectorAll(`.heart-btn[data-id="${id}"]`).forEach(btn => {
-            btn.classList.toggle('liked');
-        });
+        document.querySelectorAll(`.heart-btn[data-id="${id}"]`).forEach(btn => btn.classList.toggle('liked'));
     }
 
     function search() {
@@ -217,7 +217,6 @@ SCRIPTS = '''
         });
     }
 
-    // Тот самый имба-фикс: качает с приставкой HK_
     function forceDownload(url, name) {
         const fileName = "HK_" + name.replace(/\s+/g, '_') + ".jar";
         fetch(url).then(t => t.blob().then(b => {
@@ -227,21 +226,6 @@ SCRIPTS = '''
             a.click();
         }));
     }
-
-    document.addEventListener('mousemove', e => {
-        document.querySelectorAll('.cheat-card').forEach(card => {
-            const rect = card.getBoundingClientRect();
-            card.style.setProperty('--x', `${e.clientX - rect.left}px`);
-            card.style.setProperty('--y', `${e.clientY - rect.top}px`);
-        });
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-        let favs = getFavs();
-        document.querySelectorAll('.heart-btn').forEach(btn => {
-            if (favs.some(f => f.id === btn.dataset.id)) btn.classList.add('liked');
-        });
-    });
 </script>
 '''
 
@@ -260,7 +244,7 @@ def home():
                 <button class="heart-btn" data-id="{key}" onclick="event.stopPropagation(); updateFavs('{key}', '{val['name']}')">❤</button>
             </div>
         </div>'''
-    return render_template_string(f'<html><head>{STYLE}</head><body><div class="bg-glow"></div><header><div class="nav-container"><a href="/" class="nav-btn active">Главная</a><a href="/favs" class="nav-btn">Понравившееся</a></div></header><div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div><div class="container"><div class="hero"><h1>Каталог HK Hub</h1><div class="search-wrapper"><input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск читов..."></div></div><div class="cheat-grid">{cards_html}</div></div>{SCRIPTS}</body></html>')
+    return render_template_string(f'<html><head>{STYLE}</head><body><div class="bg-glow"></div>{HEADER_HTML.replace("{{ \'active\' if page == \'home\' else \'\' }}", "active")}<div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div><div class="container"><div class="hero"><h1>Каталог HK Hub</h1><input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск читов..."></div><div class="cheat-grid">{cards_html}</div></div>{SCRIPTS}</body></html>')
 
 @app.route('/cheat/<id>')
 def detail(id):
@@ -268,32 +252,26 @@ def detail(id):
     if not item: return "404", 404
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
-        <header><div class="nav-container"><a href="/" class="nav-btn">Главная</a><a href="/favs" class="nav-btn">Понравившееся</a></div></header>
-        <div class="container"><div class="detail-view">
-            <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад к списку</a>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h1 style="font-size:4rem;">{item['name']}</h1>
+        <div class="bg-glow"></div>{HEADER_HTML}
+        <div class="container">
+            <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin: 30px 0;">
+                <h1 style="font-size:3.5rem;">{item['name']}</h1>
                 <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
             </div>
             <div class="dl-section">
                 <span class="version-tag" style="padding:10px 20px; font-size:1.1rem; border-color:var(--accent); color:white;">Версия: {item['ver']}</span>
-                <p style="font-size:1.5rem; margin:30px 0; color:#ccc;">{item['desc']}</p>
+                <p style="font-size:1.4rem; margin:30px 0; color:#ccc;">{item['desc']}</p>
                 <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ .JAR ОТ HK</button>
             </div>
-        </div></div>{SCRIPTS}
+        </div>{SCRIPTS}
     </body></html>''')
 
 @app.route('/favs')
 def favorites_page():
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
-        <div class="bg-glow"></div>
-        <header>
-            <div class="nav-container">
-                <a href="/" class="nav-btn">Главная</a>
-                <a href="/favs" class="nav-btn active">Понравившееся</a>
-            </div>
-        </header>
+        <div class="bg-glow"></div>{HEADER_HTML.replace("{{ \'active\' if page == \'favs\' else \'\' }}", "active")}
         <div class="container">
             <div class="hero"><h1>Понравившееся</h1></div>
             <div id="fav-display" class="cheat-grid"></div>
