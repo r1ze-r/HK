@@ -297,8 +297,9 @@ SCRIPTS = '''
 def get_nav(page):
     return f'''
     <nav style="display: flex; justify-content: center; align-items: center; padding: 20px 50px; position: relative;">
-        <a href="/" style="text-decoration: none; color: white;">
-            <span style="font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
+        <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
+            <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
+            <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
         </a>
         
         <div style="position: absolute; right: 50px; display: flex; gap: 20px;">
