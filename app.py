@@ -1,9 +1,7 @@
 from flask import Flask, render_template_string, jsonify
 
-app = Flask(__name__) 
+app = Flask(__name__)
 
-
-    
 # --- CONFIG DATA (Твоя база, где ты сам добавляешь читы) ---
 DATABASE = {
     'wurst': {
@@ -24,13 +22,14 @@ DATABASE = {
     },
     'meteor': {
         'name': 'Meteor Client',
-        'desc': 'Ультимативное решение для PVP и анархии. гибкая настройка HUD и мощная система макросов.',
+        'desc': 'Ультимативное решение для PVP и анархии. Гибкая настройка HUD и мощная система макросов.',
         'ver': '1.21.1',
         'tags': ['Anarchy', 'PVP', 'Cheat'],
         'color': '#2ecc71',
-        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.11-hk.jar'
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.1-hk.jar'
     }
 }
+
 
 # --- FULL PORSCHE EDITION STYLES (Тот самый стиль) ---
 STYLE = '''
