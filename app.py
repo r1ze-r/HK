@@ -373,43 +373,47 @@ def detail(id):
         {SCRIPTS}
     </body></html>''')
 
-@app.route('/favs')
-def favorites_page():
+@app.route('/cheat/<id>')
+def detail(id):
+    item = DATABASE.get(id)
+    if not item: return "404", 404
+    
+    # Определяем, какое видео показать
+    is_zip = item['file_url'].lower().endswith('.zip')
+    video_src = "твой_видос_для_zip.mp4" if is_zip else "2026-02-16 22-54-44.mp4"
+
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
         <div class="bg-glow"></div>
-        {get_nav("favs")}
-        <div class="container">
-            <div class="hero"><h1>Понравившееся</h1></div>
-            <div id="fav-display" class="cheat-grid"></div>
+        {get_nav("detail")}
+        <div class="container" style="padding-top: 20px;">
+            <div class="detail-view" style="gap: 20px;">
+                <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
+                
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h1 style="font-size:3rem; margin:0;">{item['name']}</h1>
+                    <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
+                </div>
+
+                <div class="dl-section" style="padding: 25px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                    <span class="version-tag">Версия: {item['ver']}</span>
+                    <p style="font-size:1.1rem; color:#ccc; text-align:center; margin:0;">{item['desc']}</p>
+                    
+                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ ОТ HK</button>
+
+                    <div style="width: 100%; max-width: 400px; border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border); box-shadow: 0 0 20px var(--accent-glow);">
+                        <video width="100%" height="auto" controls style="display: block;">
+                            <source src="/static/{video_src}" type="video/mp4">
+                            Ваш браузер не поддерживает видео.
+                        </video>
+                        <div style="background: #151515; padding: 8px; text-align: center; font-size: 0.8rem; font-weight: 700;">
+                            Гайд по установке {".ZIP" if is_zip else ".JAR"}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         {SCRIPTS}
-        <script>
-            const data = {DATABASE};
-            let f = getFavs();
-            let grid = document.getElementById('fav-display');
-            if(!f.length) {{
-                grid.innerHTML = '<h1 style="grid-column:1/-1; text-align:center; opacity:0.1; font-size:5rem; margin-top:100px;">ПУСТО</h1>';
-            }} else {{
-                f.forEach(item => {{
-                    let c = data[item.id];
-                    if(c) {{
-                        let tags = c.tags.map(t => `<span class="tag">${{t}}</span>`).join('');
-                        grid.innerHTML += `
-                        <div class="cheat-card" id="card-fav-${{item.id}}" onclick="window.location.href='/cheat/${{item.id}}'">
-                            <div class="tag-container">${{tags}}</div>
-                            <h3>${{c.name}}</h3>
-                            <p style="color:var(--text-dim); margin-bottom:20px;">${{c.desc}}</p>
-                            <div class="card-meta">
-                                <span class="version-tag">${{c.ver}}</span>
-                                <button class="heart-btn liked" data-id="${{item.id}}" onclick="event.stopPropagation(); updateFavs('${{item.id}}', '${{c.name}}', true)">❤</button>
-                            </div>
-                        </div>`;
-                    }}
-                }});
-            }}
-        </script>
     </body></html>''')
-
 if __name__ == '__main__':
     app.run(debug=True)
