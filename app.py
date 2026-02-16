@@ -255,7 +255,7 @@ SCRIPTS = '''
     }
 
     function forceDownload(url, name) {
-        const fileName = "HK_" + name.replace(/\s+/g, '_') + ".jar";
+        const fileName = "HK_" + name.replace(/\s+/g, '_');
         fetch(url).then(t => t.blob().then(b => {
             var a = document.createElement("a");
             a.href = URL.createObjectURL(b);
@@ -343,7 +343,7 @@ def detail(id):
                 <div class="dl-section">
                     <span class="version-tag" style="padding:10px 20px; font-size:1.1rem; border-color:var(--accent); color:white;">Версия: {item['ver']}</span>
                     <p style="font-size:1.5rem; margin:30px 0; color:#ccc;">{item['desc']}</p>
-                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ .JAR ОТ HK</button>
+                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ ОТ HK</button>
                 </div>
             </div>
         </div>
