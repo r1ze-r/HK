@@ -264,17 +264,20 @@ SCRIPTS = '''
 </script>
 '''
 
-def get_nav(active_page):
+def get_nav(page):
     return f'''
     <header>
         <div class="nav-container">
             <a href="/" class="logo">
-                <img src="/static/HK.png" class="logo-img" alt="Logo">
+                <img src="/static/HK.png" 
+                     class="logo-img" 
+                     alt="HK"
+                     onerror="this.src='HK.png'; this.onerror=null;">
                 <div class="logo-text">HK HUB</div>
             </a>
             <div class="nav-links">
-                <a href="/" class="nav-btn {"active" if active_page == "home" else ""}">Главная</a>
-                <a href="/favs" class="nav-btn {"active" if active_page == "favs" else ""}">Понравившееся</a>
+                <a href="/" class="nav-btn {"active" if page == "home" else ""}">Главная</a>
+                <a href="/favs" class="nav-btn {"active" if page == "favs" else ""}">Понравившееся</a>
             </div>
         </div>
     </header>
