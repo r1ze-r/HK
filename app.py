@@ -2,7 +2,82 @@ from flask import Flask, render_template_string, jsonify
 
 app = Flask(__name__) 
 
-
+@app.route('/')
+def home():
+    return render_template_string('''
+    <html>
+    <head>
+        <title>HK HUB | Maintenance</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap');
+            body {
+                background-color: #050505;
+                color: white;
+                font-family: 'Inter', sans-serif;
+                margin: 0;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            header {
+                padding: 20px 40px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            .logo-img {
+                width: 45px;
+                height: 45px;
+                border-radius: 12px;
+                border: 1px solid #222;
+                box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+            }
+            .logo-text { font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; }
+            .tg-btn {
+                background: #24A1DE;
+                color: white;
+                text-decoration: none;
+                padding: 12px 25px;
+                border-radius: 14px;
+                font-weight: 700;
+                transition: 0.3s;
+            }
+            .tg-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(36, 161, 222, 0.4); }
+            .content {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .maint-text {
+                font-size: clamp(1.5rem, 5vw, 3.5rem);
+                font-weight: 900;
+                text-align: center;
+                text-transform: uppercase;
+                letter-spacing: -2px;
+            }
+            .dot { color: #ff4444; }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <img src="/static/HK.png" class="logo-img" onerror="this.src='https://via.placeholder.com/50/ff4444/000000?text=HK'">
+                <div class="logo-text">HK HUB</div>
+            </div>
+            <a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a>
+        </header>
+        <div class="content">
+            <h1 class="maint-text">Сайт в техническом обслуживании<span class="dot">.</span></h1>
+        </div>
+    </body>
+    </html>
+    ''')
     
 # --- CONFIG DATA (Твоя база, где ты сам добавляешь читы) ---
 DATABASE = {
