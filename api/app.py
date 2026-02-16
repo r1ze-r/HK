@@ -2,7 +2,7 @@ from flask import Flask, render_template_string, jsonify
 
 app = Flask(__name__)
 
-# --- CONFIG DATA (Только нужные файлы) ---
+# --- CONFIG DATA (Meteor & Wurst ONLY) ---
 DATABASE = {
     'wurst': {
         'name': 'Wurst Client',
@@ -22,7 +22,7 @@ DATABASE = {
     }
 }
 
-# --- FULL PORSCHE EDITION STYLES (Тот самый жирный блок) ---
+# --- FULL PORSCHE EDITION STYLES ---
 STYLE = '''
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -101,22 +101,21 @@ STYLE = '''
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
+    .search-wrapper { position: relative; width: 100%; max-width: 500px; margin: 30px auto; }
     .search-input {
-        width: 100%; max-width: 500px; background: #111; border: 1px solid #222;
+        width: 100%; background: #111; border: 1px solid #222;
         padding: 18px 30px; border-radius: 20px; color: white;
         font-size: 1.1rem; outline: none; transition: var(--transition);
-        text-align: center; margin: 30px auto; display: block;
+        text-align: center;
     }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); }
 
     .cheat-grid {
         display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
         gap: 30px; animation: fadeInUp 0.8s ease;
     }
 
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
     .cheat-card {
         background: var(--card-bg); border: 1px solid var(--card-border);
@@ -165,11 +164,20 @@ STYLE = '''
         background: var(--green); color: black; padding: 25px 60px;
         border-radius: 20px; text-decoration: none; font-weight: 900;
         font-size: 1.5rem; display: inline-block; cursor: pointer; border: none;
+        transition: var(--transition);
+    }
+    .big-dl-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(46, 204, 113, 0.4); }
+
+    @media (max-width: 800px) {
+        .hero h1 { font-size: 2.5rem; }
+        .tg-anchor { left: 20px; bottom: 20px; right: 20px; }
+        .tg-btn { justify-content: center; width: 100%; }
+        .cheat-grid { grid-template-columns: 1fr; }
     }
 </style>
 '''
 
-# --- ENGINE SCRIPTS (С магией удаления из избранного) ---
+# --- ENGINE SCRIPTS (С ФИКСОМ ИМЕНИ ФАЙЛА HK) ---
 SCRIPTS = '''
 <script>
     function getFavs() { return JSON.parse(localStorage.getItem('hk_v3_favs') || '[]'); }
@@ -197,7 +205,6 @@ SCRIPTS = '''
         
         localStorage.setItem('hk_v3_favs', JSON.stringify(favs));
         
-        // Синхрон сердечек
         document.querySelectorAll(`.heart-btn[data-id="${id}"]`).forEach(btn => {
             btn.classList.toggle('liked');
         });
@@ -210,16 +217,17 @@ SCRIPTS = '''
         });
     }
 
-    function forceDownload(url, filename) {
+    // Тот самый имба-фикс: качает с приставкой HK_
+    function forceDownload(url, name) {
+        const fileName = "HK_" + name.replace(/\s+/g, '_') + ".jar";
         fetch(url).then(t => t.blob().then(b => {
             var a = document.createElement("a");
             a.href = URL.createObjectURL(b);
-            a.setAttribute("download", filename);
+            a.setAttribute("download", fileName);
             a.click();
         }));
     }
 
-    // Porsche Mouse FX
     document.addEventListener('mousemove', e => {
         document.querySelectorAll('.cheat-card').forEach(card => {
             const rect = card.getBoundingClientRect();
@@ -252,24 +260,25 @@ def home():
                 <button class="heart-btn" data-id="{key}" onclick="event.stopPropagation(); updateFavs('{key}', '{val['name']}')">❤</button>
             </div>
         </div>'''
-    return render_template_string(f'<html><head>{STYLE}</head><body><div class="bg-glow"></div><header><div class="nav-container"><a href="/" class="nav-btn active">Главная</a><a href="/favs" class="nav-btn">Понравившееся</a></div></header><div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div><div class="container"><div class="hero"><h1>Каталог Читов</h1><input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск..."></div><div class="cheat-grid">{cards_html}</div></div>{SCRIPTS}</body></html>')
+    return render_template_string(f'<html><head>{STYLE}</head><body><div class="bg-glow"></div><header><div class="nav-container"><a href="/" class="nav-btn active">Главная</a><a href="/favs" class="nav-btn">Понравившееся</a></div></header><div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div><div class="container"><div class="hero"><h1>Каталог HK Hub</h1><div class="search-wrapper"><input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск читов..."></div></div><div class="cheat-grid">{cards_html}</div></div>{SCRIPTS}</body></html>')
 
 @app.route('/cheat/<id>')
 def detail(id):
     item = DATABASE.get(id)
-    if not item: return "Not Found", 404
+    if not item: return "404", 404
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
         <header><div class="nav-container"><a href="/" class="nav-btn">Главная</a><a href="/favs" class="nav-btn">Понравившееся</a></div></header>
         <div class="container"><div class="detail-view">
-            <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
+            <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад к списку</a>
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h1 style="font-size:4rem;">{item['name']}</h1>
                 <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
             </div>
             <div class="dl-section">
-                <p style="font-size:1.5rem; margin-bottom:30px; color:#ccc;">{item['desc']}</p>
-                <button onclick="forceDownload('{item['file_url']}', '{id}.jar')" class="big-dl-btn">СКАЧАТЬ .JAR КЛИЕНТ</button>
+                <span class="version-tag" style="padding:10px 20px; font-size:1.1rem; border-color:var(--accent); color:white;">Версия: {item['ver']}</span>
+                <p style="font-size:1.5rem; margin:30px 0; color:#ccc;">{item['desc']}</p>
+                <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ .JAR ОТ HK</button>
             </div>
         </div></div>{SCRIPTS}
     </body></html>''')
@@ -280,7 +289,7 @@ def favorites_page():
     <html><head>{STYLE}</head><body>
         <header><div class="nav-container"><a href="/" class="nav-btn">Главная</a><a href="/favs" class="nav-btn active">Понравившееся</a></div></header>
         <div class="container">
-            <div class="hero"><h1>Твоя Коллекция</h1></div>
+            <div class="hero"><h1>Твоё Избранное</h1></div>
             <div id="fav-display" class="cheat-grid"></div>
         </div>
         {SCRIPTS}
