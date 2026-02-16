@@ -255,15 +255,17 @@ SCRIPTS = '''
     }
 
     function forceDownload(url, name) {
-        const fileName = "HK_" + name.replace(/\s+/g, '_');
-        fetch(url).then(t => t.blob().then(b => {
-            var a = document.createElement("a");
-            a.href = URL.createObjectURL(b);
-            a.setAttribute("download", fileName);
-            a.click();
-        }));
-    }
-
+    // Эта магия сама вытягивает .jar или .zip из твоей прямой ссылки на GitHub
+    const extension = url.split('.').pop(); 
+    const fileName = "HK_" + name.replace(/\s+/g, '_') + "." + extension;
+    
+    fetch(url).then(t => t.blob()).then(b => {
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(b);
+        a.setAttribute("download", fileName);
+        a.click();
+    });
+}
     window.addEventListener('DOMContentLoaded', () => {
         let favs = getFavs();
         document.querySelectorAll('.heart-btn').forEach(btn => {
