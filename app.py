@@ -349,39 +349,42 @@ def favs():
         <div class="bg-glow"></div>
         {get_nav("favs")}
         <div class="container">
-            <h1 style="text-align:center; margin: 40px 0;">Ваши любимые читы</h1>
+            <h1 style="text-align:center; margin: 40px 0;">Понравившееся</h1>
             <div id="favs-list" class="grid">
                 </div>
         </div>
         {SCRIPTS}
         <script>
             document.addEventListener('DOMContentLoaded', () => {{
+                // 1. Берем данные из памяти браузера
                 const favs = JSON.parse(localStorage.getItem('hk_favs') || '{{}}');
                 const container = document.getElementById('favs-list');
                 
+                // 2. Данные из твоей DATABASE в Python (передаем в JS)
+                const db = {DATABASE};
+
+                // 3. Если ничего не сохранено
                 if (Object.keys(favs).length === 0) {{
-                    container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; opacity:0.5; font-size:1.5rem; margin-top:50px;">Тут пока пусто... Добавьте что-нибудь! ❤</p>';
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; opacity:0.5; font-size:1.5rem; margin-top:50px;">Тут пока пусто... Добавьте что-нибудь!</p>';
                     return;
                 }}
 
-                // Список всех ID из базы, чтобы достать данные
-                const allCheats = {list(DATABASE.keys())}; 
-                const db = {DATABASE};
-
+                // 4. Генерируем карточки
                 let html = '';
                 for (const id in favs) {{
-                    const c = db[id];
-                    if (!c) continue;
+                    const item = db[id];
+                    if (!item) continue; // Пропускаем, если в базе такого нет
+
                     html += `
                     <div class="card" onclick="location.href='/cheat/${{id}}'">
                         <div class="card-tags">
-                            ${{c.tags.map(t => `<span class="tag">${{t}}</span>`).join('')}}
+                            ${{item.tags.map(t => `<span class="tag">${{t}}</span>`).join('')}}
                         </div>
-                        <h3 style="margin:10px 0; font-size:1.6rem;">${{c.name}}</h3>
-                        <p style="color:#888; font-size:0.95rem; flex-grow:1;">${{c.desc.substring(0, 100)}}...</p>
+                        <h3 style="margin:10px 0; font-size:1.6rem;">${{item.name}}</h3>
+                        <p style="color:#888; font-size:0.95rem; flex-grow:1;">${{item.desc.substring(0, 100)}}...</p>
                         <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
-                            <span class="version-tag">${{c.ver}}</span>
-                            <button class="heart-btn active" onclick="event.stopPropagation(); updateFavs('${{id}}', '${{c.name}}'); location.reload();">❤</button>
+                            <span class="version-tag">${{item.ver}}</span>
+                            <button class="heart-btn active" onclick="event.stopPropagation(); updateFavs('${{id}}', '${{item.name}}'); location.reload();">❤</button>
                         </div>
                     </div>`;
                 }}
