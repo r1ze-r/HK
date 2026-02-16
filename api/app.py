@@ -12,14 +12,6 @@ DATABASE = {
         'color': '#ff4444',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
     },
-    'sdsdsds': {
-        'name': 'sdsdsds',
-        'desc': 'sdsdsdssdsdsdssdsdsdssdsdsdssdsdsdssdsdsdssdsdsdsм',
-        'ver': '1.21.1',
-        'tags': ['brat', 'Ubri', 'bro'],
-        'color': '#ff4444',
-        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
-    },
     'meteor': {
         'name': 'Meteor Client',
         'desc': 'Ультимативное решение для PVP и анархии. Лучший CrystalAura на рынке, гибкая настройка HUD и мощная система макросов.',
@@ -297,7 +289,7 @@ def favorites_page():
     <html><head>{STYLE}</head><body>
         <header><div class="nav-container"><a href="/" class="nav-btn">Главная</a><a href="/favs" class="nav-btn active">Понравившееся</a></div></header>
         <div class="container">
-            <div class="hero"><h1>Твоё Избранное</h1></div>
+            <div class="hero"><h1Понравившееся</h1></div>
             <div id="fav-display" class="cheat-grid"></div>
         </div>
         {SCRIPTS}
