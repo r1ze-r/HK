@@ -375,60 +375,49 @@ def detail(id):
 
 @app.route('/cheat/<id>')
 def detail(id):
+    # Достаем данные
     item = DATABASE.get(id)
-    if not item: return "404", 404
+    if not item: 
+        return "Cheat not found", 404
     
+    # Логика выбора видео (без лишних символов)
     is_zip = item['file_url'].lower().endswith('.zip')
-    # Используем точное имя файла из твоего сообщения
-    video_file = "твой_видос_для_zip.mp4" if is_zip else "2026-02-16-22-54-44.mp4"
-    label = ".ZIP" if is_zip else ".JAR"
-
-    # Шаблон БЕЗ f-строки (безопасен для скобок {})
-    template = '''
-    <html><head>_STYLE_</head><body>
-        <div class="bg-glow"></div>
-        _NAV_
-        <div class="container" style="padding-top: 10px; max-height: 100vh; overflow: hidden;">
-            <div class="detail-view" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                    <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
-                    <button class="heart-btn" data-id="_ID_" onclick="updateFavs('_ID_', '_NAME_')">❤</button>
-                </div>
-                
-                <h1 style="font-size: 2rem; margin: 0; text-align: center;">_NAME_</h1>
-
-                <div class="dl-section" style="width: 100%; padding: 15px; display: flex; flex-direction: column; align-items: center; background: rgba(20,20,20,0.5); border-radius: 20px;">
-                    <span class="version-tag" style="margin-bottom: 5px;">Версия: _VER_</span>
-                    
-                    <button onclick="forceDownload('_URL_', '_NAME_')" class="big-dl-btn" style="padding: 12px 30px; font-size: 1.1rem; margin-bottom: 15px;">СКАЧАТЬ ОТ HK</button>
-
-                    <div style="width: 100%; max-width: 300px; border-radius: 12px; overflow: hidden; border: 1px solid #333; box-shadow: 0 0 15px var(--accent-glow);">
-                        <video width="100%" height="auto" controls style="display: block;">
-                            <source src="/static/_VIDEO_" type="video/mp4">
-                        </video>
-                        <div style="background: #111; padding: 5px; text-align: center; font-size: 0.7rem; color: #666;">
-                            Гайд по установке _LABEL_
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        _SCRIPTS_
-    </body></html>
-    '''
-
-    # Ручная подстановка данных вместо f-строки
-    res = template.replace('_STYLE_', STYLE)\
-                  .replace('_NAV_', get_nav("detail"))\
-                  .replace('_SCRIPTS_', SCRIPTS)\
-                  .replace('_ID_', id)\
-                  .replace('_NAME_', item['name'])\
-                  .replace('_VER_', item['ver'])\
-                  .replace('_URL_', item['file_url'])\
-                  .replace('_VIDEO_', video_file)\
-                  .replace('_LABEL_', label)
-
-    return render_template_string(res)
+    video_file = "2026-02-16-22-54-44.mp4" # Пока ставим один и тот же для теста
+    if is_zip:
+        video_file = "zip_guide.mp4" # Если есть второй видос
+    
+    # Собираем страницу ЧИСТЫМ текстом
+    parts = []
+    parts.append('<html><head>' + STYLE + '</head><body>')
+    parts.append('<div class="bg-glow"></div>')
+    parts.append(get_nav("detail"))
+    parts.append('<div class="container" style="padding-top:10px; text-align:center;">')
+    
+    # Кнопка назад и сердечко
+    parts.append('<div style="display:flex; justify-content:space-between; width:100%; padding:0 10px;">')
+    parts.append('<a href="/" style="color:var(--accent); text-decoration:none; font-weight:bold;">← Назад</a>')
+    parts.append('<button class="heart-btn" onclick="updateFavs(\'' + id + '\', \'' + item['name'] + '\')">❤</button>')
+    parts.append('</div>')
+    
+    # Название и описание
+    parts.append('<h1 style="font-size:2rem; margin:10px 0;">' + item['name'] + '</h1>')
+    parts.append('<div class="dl-section" style="padding:15px; background:rgba(30,30,30,0.4); border-radius:20px;">')
+    parts.append('<p style="color:#888; margin-bottom:15px;">Версия: ' + item['ver'] + '</p>')
+    
+    # Кнопка скачать
+    parts.append('<button onclick="forceDownload(\'' + item['file_url'] + '\', \'' + item['name'] + '\')" class="big-dl-btn" style="width:100%; margin-bottom:20px;">СКАЧАТЬ ОТ HK</button>')
+    
+    # Плеер видео (максимально просто)
+    parts.append('<div style="width:100%; max-width:300px; margin:0 auto; border:1px solid #333; border-radius:10px; overflow:hidden;">')
+    parts.append('<video width="100%" controls><source src="/static/' + video_file + '" type="video/mp4"></video>')
+    parts.append('</div>')
+    
+    parts.append('</div></div>') # Закрываем контейнеры
+    parts.append(SCRIPTS)
+    parts.append('</body></html>')
+    
+    # Склеиваем всё в одну строку
+    return render_template_string("".join(parts))
 
 if __name__ == '__main__':
     app.run(debug=True)
