@@ -1,4 +1,4 @@
-api/ from flask import Flask, render_template_string
+ from flask import Flask, render_template_string
 
 index = Flask(__name__) 
 
