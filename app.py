@@ -336,6 +336,8 @@ def home():
         <div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div>
         <div class="container">
             <div class="hero">
+                <img src="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png" style="width: 120px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--accent));">
+                
                 <h1>Каталог HK Hub</h1>
                 <div class="search-wrapper">
                     <input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск читов...">
