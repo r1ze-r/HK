@@ -248,11 +248,30 @@ SCRIPTS = '''
     }
 
     function search() {
-        let query = document.getElementById('mainSearch').value.toLowerCase();
-        document.querySelectorAll('.cheat-card').forEach(card => {
-            card.style.display = card.innerText.toLowerCase().includes(query) ? 'flex' : 'none';
-        });
-    }
+    let query = document.getElementById('mainSearch').value.toLowerCase().trim();
+    document.querySelectorAll('.cheat-card').forEach(card => {
+        // Берем название (h3) и версию (.version-tag) отдельно
+        let name = card.querySelector('h3').innerText.toLowerCase();
+        let versionTag = card.querySelector('.version-tag').innerText.toLowerCase();
+        
+        // Очищаем версию от текста, оставляем только цифры (напр. "1.21.11")
+        let cleanVersion = versionTag.replace(/[^\d.]/g, '');
+
+        // Если в запросе только цифры и точки, считаем, что ищут версию
+        let isVersionQuery = /^[0-9.]+$/.test(query);
+
+        let isMatch = false;
+        if (isVersionQuery) {
+            // Строгое совпадение для версии: 1.21 не покажет 1.21.11
+            isMatch = (query === cleanVersion);
+        } else {
+            // Мягкий поиск по названию: "мет" найдет "Meteor"
+            isMatch = name.includes(query);
+        }
+
+        card.style.display = isMatch ? 'flex' : 'none';
+    });
+}
 
     function forceDownload(url, name) {
     // Эта магия сама вытягивает .jar или .zip из твоей прямой ссылки на GitHub
