@@ -13,10 +13,10 @@ DATABASE = {
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
     },
     'sdsdsds': {
-        'name': 'Wurst Client',
-        'desc': 'Король выживания. Включает в себя более 150 модулей: от AutoMine до KillAura. Идеально сбалансирован для игры на серверах без жесткого античита.',
+        'name': 'sdsdsds',
+        'desc': 'sdsdsdssdsdsdssdsdsdssdsdsdssdsdsdssdsdsdssdsdsdsм',
         'ver': '1.21.1',
-        'tags': ['Survival', 'Utility', 'Classic'],
+        'tags': ['brat', 'Ubri', 'bro'],
         'color': '#ff4444',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
     },
