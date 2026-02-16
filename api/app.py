@@ -287,9 +287,15 @@ def detail(id):
 def favorites_page():
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
-        <header><div class="nav-container"><a href="/" class="nav-btn">Главная</a><a href="/favs" class="nav-btn active">Понравившееся</a></div></header>
+        <div class="bg-glow"></div>
+        <header>
+            <div class="nav-container">
+                <a href="/" class="nav-btn">Главная</a>
+                <a href="/favs" class="nav-btn active">Понравившееся</a>
+            </div>
+        </header>
         <div class="container">
-            <div class="hero"><h1Понравившееся</h1></div>
+            <div class="hero"><h1>Понравившееся</h1></div>
             <div id="fav-display" class="cheat-grid"></div>
         </div>
         {SCRIPTS}
