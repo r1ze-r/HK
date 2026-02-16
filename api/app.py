@@ -12,6 +12,14 @@ DATABASE = {
         'color': '#ff4444',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
     },
+    'sdsdsds': {
+        'name': 'Wurst Client',
+        'desc': 'Король выживания. Включает в себя более 150 модулей: от AutoMine до KillAura. Идеально сбалансирован для игры на серверах без жесткого античита.',
+        'ver': '1.21.1',
+        'tags': ['Survival', 'Utility', 'Classic'],
+        'color': '#ff4444',
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
+    },
     'meteor': {
         'name': 'Meteor Client',
         'desc': 'Ультимативное решение для PVP и анархии. Лучший CrystalAura на рынке, гибкая настройка HUD и мощная система макросов.',
