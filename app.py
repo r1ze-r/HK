@@ -378,49 +378,57 @@ def detail(id):
     item = DATABASE.get(id)
     if not item: return "404", 404
     
-    # Решаем, какой видос подсунуть
     is_zip = item['file_url'].lower().endswith('.zip')
+    # Используем точное имя файла из твоего сообщения
     video_file = "твой_видос_для_zip.mp4" if is_zip else "2026-02-16-22-54-44.mp4"
     label = ".ZIP" if is_zip else ".JAR"
 
-    # Создаем кусок кода с видео ОТДЕЛЬНО, без f-строки
-    video_html = '''
-    <div style="width: 100%; max-width: 320px; border-radius: 15px; overflow: hidden; border: 1px solid #222; margin-top: 20px;">
-        <video width="100%" height="auto" controls style="display: block;">
-            <source src="/static/''' + video_file + '''" type="video/mp4">
-        </video>
-        <div style="background: #151515; padding: 8px; text-align: center; font-size: 0.8rem; font-weight: 700; color: #888;">
-            Гайд по установке ''' + label + '''
-        </div>
-    </div>
-    '''
-
-    # Теперь собираем финальную страницу
-    return render_template_string(f'''
-    <html><head>{STYLE}</head><body>
+    # Шаблон БЕЗ f-строки (безопасен для скобок {})
+    template = '''
+    <html><head>_STYLE_</head><body>
         <div class="bg-glow"></div>
-        {get_nav("detail")}
-        <div class="container" style="padding-top: 10px;">
-            <div class="detail-view" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+        _NAV_
+        <div class="container" style="padding-top: 10px; max-height: 100vh; overflow: hidden;">
+            <div class="detail-view" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
                 <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                     <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
-                    <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
+                    <button class="heart-btn" data-id="_ID_" onclick="updateFavs('_ID_', '_NAME_')">❤</button>
                 </div>
                 
-                <h1 style="font-size: 2.5rem; margin: 0; text-align: center;">{item['name']}</h1>
+                <h1 style="font-size: 2rem; margin: 0; text-align: center;">_NAME_</h1>
 
-                <div class="dl-section" style="width: 100%; padding: 20px; display: flex; flex-direction: column; align-items: center;">
-                    <span class="version-tag" style="margin-bottom: 10px;">Версия: {item['ver']}</span>
-                    <p style="font-size: 1rem; color: #ccc; text-align: center; margin-bottom: 20px;">{item['desc']}</p>
+                <div class="dl-section" style="width: 100%; padding: 15px; display: flex; flex-direction: column; align-items: center; background: rgba(20,20,20,0.5); border-radius: 20px;">
+                    <span class="version-tag" style="margin-bottom: 5px;">Версия: _VER_</span>
                     
-                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn" style="padding: 15px 40px; font-size: 1.2rem;">СКАЧАТЬ ОТ HK</button>
+                    <button onclick="forceDownload('_URL_', '_NAME_')" class="big-dl-btn" style="padding: 12px 30px; font-size: 1.1rem; margin-bottom: 15px;">СКАЧАТЬ ОТ HK</button>
 
-                    {video_html}
+                    <div style="width: 100%; max-width: 300px; border-radius: 12px; overflow: hidden; border: 1px solid #333; box-shadow: 0 0 15px var(--accent-glow);">
+                        <video width="100%" height="auto" controls style="display: block;">
+                            <source src="/static/_VIDEO_" type="video/mp4">
+                        </video>
+                        <div style="background: #111; padding: 5px; text-align: center; font-size: 0.7rem; color: #666;">
+                            Гайд по установке _LABEL_
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        {SCRIPTS}
-    </body></html>''')
+        _SCRIPTS_
+    </body></html>
+    '''
+
+    # Ручная подстановка данных вместо f-строки
+    res = template.replace('_STYLE_', STYLE)\
+                  .replace('_NAV_', get_nav("detail"))\
+                  .replace('_SCRIPTS_', SCRIPTS)\
+                  .replace('_ID_', id)\
+                  .replace('_NAME_', item['name'])\
+                  .replace('_VER_', item['ver'])\
+                  .replace('_URL_', item['file_url'])\
+                  .replace('_VIDEO_', video_file)\
+                  .replace('_LABEL_', label)
+
+    return render_template_string(res)
 
 if __name__ == '__main__':
     app.run(debug=True)
