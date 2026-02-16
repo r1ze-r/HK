@@ -152,6 +152,6 @@ def favs():
             let list = document.getElementById('favs-list');
             if (favs.length === 0) list.innerHTML = '<p>Тут пока пусто.</p>';
             else favs.forEach(i => list.innerHTML += `<a href="/${{i.id}}" class="card"><h3>${{i.name}}</h3><p>Твой выбор.</p></a>`);
-        </script></body></html>''') # push to deploy 
-# push to deploy # push to deploy
-# push to deploy # push to deploy
+        </script></body></html>''')
+
+
