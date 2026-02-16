@@ -348,30 +348,6 @@ def home():
         {SCRIPTS}
     </body></html>''')
 
-@app.route('/cheat/<id>')
-def detail(id):
-    item = DATABASE.get(id)
-    if not item: return "404", 404
-    return render_template_string(f'''
-    <html><head>{STYLE}</head><body>
-        <div class="bg-glow"></div>
-        {get_nav("detail")}
-        <div class="container">
-            <div class="detail-view">
-                <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад к списку</a>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h1 style="font-size:4rem;">{item['name']}</h1>
-                    <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
-                </div>
-                <div class="dl-section">
-                    <span class="version-tag" style="padding:10px 20px; font-size:1.1rem; border-color:var(--accent); color:white;">Версия: {item['ver']}</span>
-                    <p style="font-size:1.5rem; margin:30px 0; color:#ccc;">{item['desc']}</p>
-                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ ОТ HK</button>
-                </div>
-            </div>
-        </div>
-        {SCRIPTS}
-    </body></html>''')
 
 @app.route('/cheat/<id>')
 def detail(id):
