@@ -1,6 +1,6 @@
 from flask import Flask, render_template_string, jsonify
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='api/static')
 
 # --- CONFIG DATA (Твоя база, где ты сам добавляешь читы) ---
 DATABASE = {
