@@ -7,7 +7,7 @@ DATABASE = {
     'wurst': {
         'name': 'Wurst Client',
         'desc': 'Король выживания. Включает в себя более 150 модулей: от AutoMine до KillAura. Идеально сбалансирован для игры на серверах без жесткого античита.',
-        'ver': '1.21.1',
+        'ver': '1.21.11',
         'tags': ['Survival', 'Utility', 'Classic', 'Cheat'],
         'color': '#ff4444',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
@@ -23,7 +23,7 @@ DATABASE = {
     'meteor': {
         'name': 'Meteor Client',
         'desc': 'Ультимативное решение для PVP и анархии. Гибкая настройка HUD и мощная система макросов.',
-        'ver': '1.21.1',
+        'ver': '1.21.11',
         'tags': ['Anarchy', 'PVP', 'Cheat'],
         'color': '#2ecc71',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.1-hk.jar'
