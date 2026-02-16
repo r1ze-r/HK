@@ -378,45 +378,49 @@ def detail(id):
     item = DATABASE.get(id)
     if not item: return "404", 404
     
-    # Проверяем расширение для выбора видео
+    # Решаем, какой видос подсунуть
     is_zip = item['file_url'].lower().endswith('.zip')
-    video_src = "твой_видос_для_zip.mp4" if is_zip else "2026-02-16-22-54-44.mp4"
-    video_label = ".ZIP" if is_zip else ".JAR"
+    video_file = "твой_видос_для_zip.mp4" if is_zip else "2026-02-16-22-54-44.mp4"
+    label = ".ZIP" if is_zip else ".JAR"
 
-    # Собираем HTML по частям, чтобы Python не ругался на скобки в стилях
-    html_content = f'''
+    # Создаем кусок кода с видео ОТДЕЛЬНО, без f-строки
+    video_html = '''
+    <div style="width: 100%; max-width: 320px; border-radius: 15px; overflow: hidden; border: 1px solid #222; margin-top: 20px;">
+        <video width="100%" height="auto" controls style="display: block;">
+            <source src="/static/''' + video_file + '''" type="video/mp4">
+        </video>
+        <div style="background: #151515; padding: 8px; text-align: center; font-size: 0.8rem; font-weight: 700; color: #888;">
+            Гайд по установке ''' + label + '''
+        </div>
+    </div>
+    '''
+
+    # Теперь собираем финальную страницу
+    return render_template_string(f'''
     <html><head>{STYLE}</head><body>
         <div class="bg-glow"></div>
         {get_nav("detail")}
-        <div class="container" style="padding-top: 20px;">
-            <div class="detail-view" style="gap: 20px;">
-                <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
-                
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h1 style="font-size:3rem; margin:0;">{item['name']}</h1>
+        <div class="container" style="padding-top: 10px;">
+            <div class="detail-view" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                    <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
                     <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
                 </div>
+                
+                <h1 style="font-size: 2.5rem; margin: 0; text-align: center;">{item['name']}</h1>
 
-                <div class="dl-section" style="padding: 25px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-                    <span class="version-tag">Версия: {item['ver']}</span>
-                    <p style="font-size:1.1rem; color:#ccc; text-align:center; margin:0;">{item['desc']}</p>
+                <div class="dl-section" style="width: 100%; padding: 20px; display: flex; flex-direction: column; align-items: center;">
+                    <span class="version-tag" style="margin-bottom: 10px;">Версия: {item['ver']}</span>
+                    <p style="font-size: 1rem; color: #ccc; text-align: center; margin-bottom: 20px;">{item['desc']}</p>
                     
-                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ ОТ HK</button>
+                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn" style="padding: 15px 40px; font-size: 1.2rem;">СКАЧАТЬ ОТ HK</button>
 
-                    <div style="width: 100%; max-width: 400px; border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border);">
-                        <video width="100%" height="auto" controls style="display: block;">
-                            <source src="/static/{video_src}" type="video/mp4">
-                        </video>
-                        <div style="background: #151515; padding: 8px; text-align: center; font-size: 0.8rem; font-weight: 700;">
-                            Гайд по установке {video_label}
-                        </div>
-                    </div>
+                    {video_html}
                 </div>
             </div>
         </div>
         {SCRIPTS}
-    </body></html>'''
-    return render_template_string(html_content)
+    </body></html>''')
 
 if __name__ == '__main__':
     app.run(debug=True)
