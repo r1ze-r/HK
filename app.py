@@ -10,15 +10,23 @@ DATABASE = {
         'name': 'Wurst Client',
         'desc': 'Король выживания. Включает в себя более 150 модулей: от AutoMine до KillAura. Идеально сбалансирован для игры на серверах без жесткого античита.',
         'ver': '1.21.1',
-        'tags': ['Survival', 'Utility', 'Classic'],
+        'tags': ['Survival', 'Utility', 'Classic', 'Cheat'],
         'color': '#ff4444',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
     },
+    'xray': {
+        'name': 'X-Ray Ultimate',
+        'desc': 'Тот самый легендарный ресурспак. Подсвечивает руды и упрощает поиск алмазов. Идеально для тех, кто хочет результат без установки тяжелых читов.',
+        'ver': '1.21',
+        'tags': ['Resourcepack', 'Survival', 'Popular'],
+        'color': '#ffffff',
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Xray_Ultimate_1.21_v5.3.1.zip'
+    },
     'meteor': {
         'name': 'Meteor Client',
-        'desc': 'Ультимативное решение для PVP и анархии. Лучший CrystalAura на рынке, гибкая настройка HUD и мощная система макросов.',
+        'desc': 'Ультимативное решение для PVP и анархии. гибкая настройка HUD и мощная система макросов.',
         'ver': '1.21.1',
-        'tags': ['Anarchy', 'PVP', 'Modern'],
+        'tags': ['Anarchy', 'PVP', 'Cheat'],
         'color': '#2ecc71',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.11-hk.jar'
     }
