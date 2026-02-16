@@ -296,21 +296,17 @@ SCRIPTS = '''
 
 def get_nav(page):
     return f'''
-    <header>
-        <div class="nav-container">
-            <a href="/" class="logo">
-                <img src="/static/HK.png" 
-                     class="logo-img" 
-                     alt="HK"
-                     onerror="this.src='HK.png'; this.onerror=null;">
-                <div class="logo-text">HK HUB</div>
-            </a>
-            <div class="nav-links">
-                <a href="/" class="nav-btn {"active" if page == "home" else ""}">Главная</a>
-                <a href="/favs" class="nav-btn {"active" if page == "favs" else ""}">Понравившееся</a>
-            </div>
+    <nav style="display: flex; justify-content: center; align-items: center; padding: 20px 50px; position: relative;">
+        <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
+            <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
+            <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
+        </a>
+        
+        <div style="position: absolute; right: 50px; display: flex; gap: 20px;">
+            <a href="/" class="nav-link {'active' if page=='index' else ''}" style="text-decoration: none; color: white; opacity: 0.8;">Главная</a>
+            <a href="/favs" class="nav-link {'active' if page=='favs' else ''}" style="text-decoration: none; color: white; opacity: 0.8;">Понравившееся</a>
         </div>
-    </header>
+    </nav>
     '''
 
 @app.route('/')
