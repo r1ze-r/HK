@@ -5,15 +5,15 @@ app = Flask(__name__)
 # Закомментируй это, когда сайт должен работать, и раскомментируй для обновы
 @app.before_request
 def maintenance():
-    # return render_template_string('''
-    # <body style="background:#050505; color:white; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; text-align:center;">
-    #     <div>
-    #         <h1 style="font-size:4rem; color:#ff4444;">HK HUB ОБНОВЛЯЕТСЯ</h1>
-    #         <p style="font-size:1.5rem; opacity:0.5;">Зайди через 15-20 минут, заливаем свежий софт...</p>
-    #         <div style="margin-top:20px; border:2px solid #ff4444; padding:10px; display:inline-block;">STATUS: MAINTENANCE</div>
-    #     </div>
-    # </body>
-    # ''')
+     return render_template_string('''
+     <body style="background:#050505; color:white; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; text-align:center;">
+         <div>
+             <h1 style="font-size:4rem; color:#ff4444;">HK HUB ОБНОВЛЯЕТСЯ</h1>
+             <p style="font-size:1.5rem; opacity:0.5;">Зайди через 15-20 минут, заливаем свежий софт...</p>
+             <div style="margin-top:20px; border:2px solid #ff4444; padding:10px; display:inline-block;">STATUS: MAINTENANCE</div>
+         </div>
+     </body>
+     ''')
     pass
     
 # --- CONFIG DATA (Твоя база, где ты сам добавляешь читы) ---
