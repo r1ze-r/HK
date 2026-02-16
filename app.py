@@ -342,7 +342,6 @@ def home():
         </div>
         {SCRIPTS}
     </body></html>''')
-
 @app.route('/favs')
 def favs():
     return render_template_string(f'''
@@ -350,10 +349,45 @@ def favs():
         <div class="bg-glow"></div>
         {get_nav("favs")}
         <div class="container">
-            <h1 style="text-align:center; margin-top:40px;">Понравившееся</h1>
-            <div id="favs-list" class="grid"></div>
+            <h1 style="text-align:center; margin: 40px 0;">Ваши любимые читы</h1>
+            <div id="favs-list" class="grid">
+                </div>
         </div>
         {SCRIPTS}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {{
+                const favs = JSON.parse(localStorage.getItem('hk_favs') || '{{}}');
+                const container = document.getElementById('favs-list');
+                
+                if (Object.keys(favs).length === 0) {{
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; opacity:0.5; font-size:1.5rem; margin-top:50px;">Тут пока пусто... Добавьте что-нибудь! ❤</p>';
+                    return;
+                }}
+
+                // Список всех ID из базы, чтобы достать данные
+                const allCheats = {list(DATABASE.keys())}; 
+                const db = {DATABASE};
+
+                let html = '';
+                for (const id in favs) {{
+                    const c = db[id];
+                    if (!c) continue;
+                    html += `
+                    <div class="card" onclick="location.href='/cheat/${{id}}'">
+                        <div class="card-tags">
+                            ${{c.tags.map(t => `<span class="tag">${{t}}</span>`).join('')}}
+                        </div>
+                        <h3 style="margin:10px 0; font-size:1.6rem;">${{c.name}}</h3>
+                        <p style="color:#888; font-size:0.95rem; flex-grow:1;">${{c.desc.substring(0, 100)}}...</p>
+                        <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
+                            <span class="version-tag">${{c.ver}}</span>
+                            <button class="heart-btn active" onclick="event.stopPropagation(); updateFavs('${{id}}', '${{c.name}}'); location.reload();">❤</button>
+                        </div>
+                    </div>`;
+                }}
+                container.innerHTML = html;
+            }});
+        </script>
     </body></html>''')
 
 @app.route('/cheat/<id>')
