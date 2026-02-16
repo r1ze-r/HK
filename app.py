@@ -296,19 +296,17 @@ SCRIPTS = '''
 
 def get_nav(page):
     return f'''
-    <nav style="display: flex; justify-content: center; align-items: center; padding: 20px 50px; position: relative;">
-        <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
-            <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
-            <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 20px 50px;">
+        <a href="/" style="text-decoration: none; color: white;">
+            <span style="font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; color: var(--accent);">HK HUB</span>
         </a>
         
-        <div style="position: absolute; right: 50px; display: flex; gap: 20px;">
-            <a href="/" class="nav-link {'active' if page=='index' else ''}" style="text-decoration: none; color: white; opacity: 0.8;">Главная</a>
-            <a href="/favs" class="nav-link {'active' if page=='favs' else ''}" style="text-decoration: none; color: white; opacity: 0.8;">Понравившееся</a>
+        <div style="display: flex; gap: 20px;">
+            <a href="/" style="text-decoration: none; color: white; opacity: {'1' if page=='index' else '0.6'}; font-weight: bold;">Главная</a>
+            <a href="/favs" style="text-decoration: none; color: white; opacity: {'1' if page=='favs' else '0.6'}; font-weight: bold;">Понравившееся</a>
         </div>
     </nav>
     '''
-
 @app.route('/')
 def home():
     cards_html = ""
