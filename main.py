@@ -19,8 +19,12 @@ STYLE = '''
     .btn-tg { background: var(--tg); color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; font-size: 0.85rem; transition: 0.3s; }
     .btn-tg:hover { filter: brightness(1.2); transform: translateY(-2px); }
     
+    /* Кнопка скачивания для ПК */
     .btn-install { background: var(--green); color: black; padding: 12px; border: none; border-radius: 8px; font-weight: bold; text-align: center; font-size: 0.9rem; transition: 0.3s; cursor: pointer; width: 100%; display: block; }
     .btn-install:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(46, 204, 113, 0.3); }
+
+    /* Плашка для мобилок (вместо кнопки) */
+    .mobile-no-download { display: none; background: #222; color: var(--subtext); padding: 12px; border-radius: 8px; font-weight: bold; text-align: center; font-size: 0.8rem; border: 1px dashed #444; }
 
     .main { flex: 1; padding: 20px 40px; margin-left: 240px; } 
     .top-bar { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 25px; min-height: 45px; }
@@ -54,11 +58,14 @@ STYLE = '''
         .btn-back-abs { position: relative; margin-bottom: 10px; display: block; }
         .top-bar { flex-direction: column; align-items: flex-start; }
         .heart-container { position: relative; margin-top: 10px; right: auto; }
+        
+        /* Прячем кнопку скачивания и показываем текст */
+        .btn-install { display: none !important; }
+        .mobile-no-download { display: block; }
     }
 </style>
 '''
 
-# Скрипты (без изменений)
 SCRIPTS = '''
 <script>
     async function forceDownload(url, filename) {
@@ -72,7 +79,7 @@ SCRIPTS = '''
             link.click();
             document.body.removeChild(link);
         } catch (e) {
-            console.error("Download failed, falling back to link", e);
+            console.error("Download failed", e);
             window.location.href = url;
         }
     }
@@ -100,7 +107,10 @@ SCRIPTS = '''
 def get_sidebar(active_page, file_url=None):
     if file_url:
         filename = file_url.split('/')[-1]
-        install_btn = f'<button onclick="forceDownload(\'{file_url}\', \'{filename}\')" class="btn-install">Скачать .jar</button>'
+        install_btn = f'''
+            <button onclick="forceDownload('{file_url}', '{filename}')" class="btn-install">Скачать .jar</button>
+            <div class="mobile-no-download">Скачать можно только с ПК</div>
+        '''
     else:
         install_btn = ''
         
@@ -120,7 +130,6 @@ def get_sidebar(active_page, file_url=None):
 
 @app.route('/')
 def home():
-    # Добавил meta name="viewport" во все страницы
     return render_template_string(f'''
         <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - Главная</title>{STYLE}</head>
         <body>{get_sidebar('home')}<div class="main">
@@ -135,11 +144,6 @@ def home():
                     <h3>Meteor Client</h3>
                     <p>Стабильная сборка для совместного фана.</p>
                     <div class="card-footer"><span class="card-version">1.21.11</span></div>
-                </a>
-                <a href="/norisk" class="card">
-                    <h3>NoRisk (Нурик)</h3>
-                    <p>Тот самый клиент из ТТ. Буст ФПС и бесплатные плащи.</p>
-                    <div class="card-footer"><span class="card-version">Актуально</span></div>
                 </a>
             </div>
         </div>{SCRIPTS}</body></html>
@@ -167,19 +171,6 @@ def meteor_page():
         <div class="heart-container"><button id="heart-meteor" class="heart-btn" onclick="toggleLike('meteor', 'Meteor Client')">❤</button></div>
         </div><h1>Meteor Client 1.21.11-hk</h1>
         <p style="color:var(--subtext); font-size:1.1rem; line-height:1.6;">Топовый чит для PVP и анархии. Версия HK оптимизирована для быстрой загрузки.</p></div>{SCRIPTS}</body></html>
-    ''')
-
-@app.route('/norisk')
-def norisk_page():
-    # Ссылка на оф сайт для Нурика
-    file_url = 'https://norisk.gg/' 
-    return render_template_string(f'''
-        <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png"><title>HK - NoRisk</title>{STYLE}</head>
-        <body onload="loadHeartState('norisk')">{get_sidebar('norisk', file_url)}
-        <div class="main"><div class="top-bar"><a href="/" class="btn-back-abs">← Назад на главную</a>
-        <div class="heart-container"><button id="heart-norisk" class="heart-btn" onclick="toggleLike('norisk', 'NoRisk')">❤</button></div>
-        </div><h1>NoRisk Client (Нурик)</h1>
-        <p style="color:var(--subtext); font-size:1.1rem; line-height:1.6;">Популярный клиент с мощной оптимизацией FPS и встроенными мини-играми. Идеально для серверов.</p></div>{SCRIPTS}</body></html>
     ''')
 
 @app.route('/favs')
