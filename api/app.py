@@ -269,7 +269,7 @@ def get_nav(active_page):
     <header>
         <div class="nav-container">
             <a href="/" class="logo">
-                <img src="HK.png" class="logo-img" alt="Logo">
+                <img src="/static/HK.png" class="logo-img" alt="Logo">
                 <div class="logo-text">HK HUB</div>
             </a>
             <div class="nav-links">
