@@ -2,7 +2,7 @@ from flask import Flask, render_template_string, jsonify
 
 app = Flask(__name__)
 
-# --- CONFIG DATA ---
+# --- CONFIG DATA (Только нужные файлы) ---
 DATABASE = {
     'wurst': {
         'name': 'Wurst Client',
@@ -19,26 +19,10 @@ DATABASE = {
         'tags': ['Anarchy', 'PVP', 'Modern'],
         'color': '#2ecc71',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.11-hk.jar'
-    },
-    'impact': {
-        'name': 'Impact Client',
-        'desc': 'Легендарный клиент для старых версий и анархии. Знаменит своим Baritone-интеграцией и удобным ClickGUI.',
-        'ver': '1.12.2',
-        'tags': ['Oldschool', 'Anarchy', 'Baritone'],
-        'color': '#3498db',
-        'file_url': '#'
-    },
-    'aristois': {
-        'name': 'Aristois',
-        'desc': 'Универсальный чит с поддержкой всех версий Minecraft. Имеет встроенный менеджер аддонов и активное сообщество.',
-        'ver': '1.20.4',
-        'tags': ['Universal', 'Addons', 'UI'],
-        'color': '#9b59b6',
-        'file_url': '#'
     }
 }
 
-# --- THEMES & CSS (Full Porsche Edition) ---
+# --- FULL PORSCHE EDITION STYLES (Тот самый жирный блок) ---
 STYLE = '''
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -117,21 +101,11 @@ STYLE = '''
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    .search-wrapper {
-        position: relative; width: 100%; max-width: 500px; margin: 30px auto;
-    }
-
     .search-input {
-        width: 100%; background: #111; border: 1px solid #222;
+        width: 100%; max-width: 500px; background: #111; border: 1px solid #222;
         padding: 18px 30px; border-radius: 20px; color: white;
-        font-size: 1.1rem; font-weight: 500; outline: none;
-        transition: var(--transition);
-        text-align: center;
-    }
-
-    .search-input:focus {
-        border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow);
-        width: 110%; transform: translateX(-4.5%);
+        font-size: 1.1rem; outline: none; transition: var(--transition);
+        text-align: center; margin: 30px auto; display: block;
     }
 
     .cheat-grid {
@@ -158,20 +132,17 @@ STYLE = '''
     }
 
     .cheat-card:hover {
-        border-color: #444; transform: translateY(-10px) scale(1.02);
+        border-color: #444; transform: translateY(-10px);
         box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    .cheat-card.selected { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
-
     .cheat-card h3 { font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-bottom: 12px; }
-    .cheat-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 25px; min-height: 60px; }
-
+    
     .tag-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-    .tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: #1a1a1a; padding: 4px 12px; border-radius: 6px; color: #666; }
+    .tag { font-size: 0.7rem; font-weight: 700; background: #1a1a1a; padding: 4px 12px; border-radius: 6px; color: #666; text-transform: uppercase; }
 
     .card-meta { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
-    .version-tag { background: #000; padding: 5px 12px; border-radius: 10px; border: 1px solid #222; font-size: 0.8rem; font-weight: 700; color: #aaa; }
+    .version-tag { background: #000; padding: 5px 12px; border-radius: 10px; border: 1px solid #222; font-size: 0.8rem; color: #aaa; }
 
     .heart-btn {
         width: 45px; height: 45px; border-radius: 12px;
@@ -181,84 +152,52 @@ STYLE = '''
     }
     .heart-btn.liked { color: var(--accent); background: rgba(255,68,68,0.1); }
 
-    .tg-anchor {
-        position: fixed; left: 40px; bottom: 40px; z-index: 999;
-    }
-
+    .tg-anchor { position: fixed; left: 40px; bottom: 40px; z-index: 999; }
     .tg-btn {
-        background: var(--tg-color); color: white;
-        padding: 18px 30px; border-radius: 20px;
-        text-decoration: none; font-weight: 900;
-        display: flex; align-items: center; gap: 12px;
-        box-shadow: 0 10px 30px rgba(36, 161, 222, 0.4);
-        transition: var(--transition);
+        background: var(--tg-color); color: white; padding: 18px 30px; border-radius: 20px;
+        text-decoration: none; font-weight: 900; display: flex; align-items: center; gap: 12px;
+        box-shadow: 0 10px 30px rgba(36, 161, 222, 0.4); transition: 0.3s;
     }
 
-    .tg-btn:hover { transform: scale(1.05) rotate(-2deg); }
-
-    .fav-header { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; position: relative; }
-    .action-btn {
-        padding: 14px 25px; border-radius: 15px; border: 1px solid #333;
-        background: #111; color: white; font-weight: 700; cursor: pointer;
-        transition: 0.2s; font-size: 0.9rem;
-    }
-    .action-btn.danger { border-color: var(--accent); color: var(--accent); }
-    .action-btn.danger:hover { background: var(--accent); color: white; }
-    .action-btn.active { background: var(--accent); border-color: var(--accent); }
-
-    .floating-confirm {
-        position: fixed; bottom: 40px; right: 40px;
-        background: var(--green); color: black;
-        padding: 20px 40px; border-radius: 20px;
-        font-weight: 900; font-size: 1.1rem;
-        cursor: pointer; display: none; z-index: 1001;
-        box-shadow: 0 10px 40px rgba(46, 204, 113, 0.4);
-        border: none; animation: pop 0.3s ease;
-    }
-
-    @keyframes pop { from { transform: scale(0.8); opacity: 0; } }
-
-    .detail-view { display: flex; flex-direction: column; align-items: flex-start; gap: 40px; }
-    .back-btn { font-weight: 900; color: var(--accent); text-decoration: none; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+    .detail-view { display: flex; flex-direction: column; gap: 40px; }
     .dl-section { width: 100%; padding: 40px; background: var(--card-bg); border-radius: 30px; border: 1px solid #222; }
     .big-dl-btn {
         background: var(--green); color: black; padding: 25px 60px;
         border-radius: 20px; text-decoration: none; font-weight: 900;
-        font-size: 1.5rem; display: inline-block; transition: var(--transition);
-        border: none; cursor: pointer;
-    }
-    .big-dl-btn:hover { transform: scale(1.03); box-shadow: 0 0 40px rgba(46,204,113,0.3); }
-
-    @media (max-width: 800px) {
-        .hero h1 { font-size: 2.5rem; }
-        .tg-anchor { left: 20px; bottom: 20px; right: 20px; }
-        .tg-btn { justify-content: center; width: 100%; }
-        .cheat-grid { grid-template-columns: 1fr; }
-        .nav-container { gap: 8px; }
-        .nav-btn { padding: 10px 15px; font-size: 0.8rem; }
-        .search-input:focus { width: 100%; transform: none; }
-        .floating-confirm { left: 20px; right: 20px; bottom: 100px; text-align: center; }
+        font-size: 1.5rem; display: inline-block; cursor: pointer; border: none;
     }
 </style>
 '''
 
-# --- ENGINE SCRIPTS ---
+# --- ENGINE SCRIPTS (С магией удаления из избранного) ---
 SCRIPTS = '''
 <script>
-    let currentMode = "normal";
-    let selectedCheats = [];
+    function getFavs() { return JSON.parse(localStorage.getItem('hk_v3_favs') || '[]'); }
 
-    function updateFavs(id, name) {
-        let favs = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
+    function updateFavs(id, name, isFavPage = false) {
+        let favs = getFavs();
         let index = favs.findIndex(item => item.id === id);
+        
         if (index > -1) {
             favs.splice(index, 1);
+            if(isFavPage) {
+                const card = document.getElementById(`card-fav-${id}`);
+                if(card) {
+                    card.style.transform = 'scale(0.8) translateY(20px)';
+                    card.style.opacity = '0';
+                    setTimeout(() => { 
+                        card.remove();
+                        if(getFavs().length === 0) location.reload();
+                    }, 400);
+                }
+            }
         } else {
             favs.push({id: id, name: name});
         }
+        
         localStorage.setItem('hk_v3_favs', JSON.stringify(favs));
         
-        // Визуальное обновление без перезагрузки
+        // Синхрон сердечек
         document.querySelectorAll(`.heart-btn[data-id="${id}"]`).forEach(btn => {
             btn.classList.toggle('liked');
         });
@@ -267,12 +206,10 @@ SCRIPTS = '''
     function search() {
         let query = document.getElementById('mainSearch').value.toLowerCase();
         document.querySelectorAll('.cheat-card').forEach(card => {
-            let content = card.innerText.toLowerCase();
-            card.style.display = content.includes(query) ? 'flex' : 'none';
+            card.style.display = card.innerText.toLowerCase().includes(query) ? 'flex' : 'none';
         });
     }
 
-    // Тот самый фикс Метеора
     function forceDownload(url, filename) {
         fetch(url).then(t => t.blob().then(b => {
             var a = document.createElement("a");
@@ -282,7 +219,7 @@ SCRIPTS = '''
         }));
     }
 
-    // Porsche FX
+    // Porsche Mouse FX
     document.addEventListener('mousemove', e => {
         document.querySelectorAll('.cheat-card').forEach(card => {
             const rect = card.getBoundingClientRect();
@@ -291,9 +228,8 @@ SCRIPTS = '''
         });
     });
 
-    // Инициализация лайков при загрузке
     window.addEventListener('DOMContentLoaded', () => {
-        let favs = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
+        let favs = getFavs();
         document.querySelectorAll('.heart-btn').forEach(btn => {
             if (favs.some(f => f.id === btn.dataset.id)) btn.classList.add('liked');
         });
@@ -307,154 +243,73 @@ def home():
     for key, val in DATABASE.items():
         tags = "".join([f'<span class="tag">{t}</span>' for t in val['tags']])
         cards_html += f'''
-        <div class="cheat-card" id="card-{key}" onclick="window.location.href='/cheat/{key}'">
+        <div class="cheat-card" onclick="window.location.href='/cheat/{key}'">
             <div class="tag-container">{tags}</div>
             <h3>{val['name']}</h3>
-            <p>{val['desc']}</p>
+            <p style="color:var(--text-dim); margin-bottom:20px;">{val['desc']}</p>
             <div class="card-meta">
                 <span class="version-tag">{val['ver']}</span>
                 <button class="heart-btn" data-id="{key}" onclick="event.stopPropagation(); updateFavs('{key}', '{val['name']}')">❤</button>
             </div>
-        </div>
-        '''
-    
-    return render_template_string(f'''
-    <!DOCTYPE html>
-    <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>HK Hub | Porsche Edition</title>
-        <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/r1ze-r/HK/main/HK.png">
-        {STYLE}
-    </head>
-    <body>
-        <div class="bg-glow"></div>
-        <header>
-            <div class="nav-container">
-                <a href="/" class="nav-btn active">Главная</a>
-                <a href="/favs" class="nav-btn">Понравившееся</a>
-            </div>
-        </header>
-
-        <div class="tg-anchor">
-            <a href="https://t.me/hellokilaura" class="tg-btn">
-                <span>Наш Telegram</span>
-            </a>
-        </div>
-
-        <div class="container">
-            <div class="hero">
-                <h1>Все Читы</h1>
-                <div class="search-wrapper">
-                    <input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск по названию или версии...">
-                </div>
-            </div>
-            
-            <div class="cheat-grid">
-                {cards_html}
-            </div>
-        </div>
-
-        {SCRIPTS}
-    </body>
-    </html>
-    ''')
+        </div>'''
+    return render_template_string(f'<html><head>{STYLE}</head><body><div class="bg-glow"></div><header><div class="nav-container"><a href="/" class="nav-btn active">Главная</a><a href="/favs" class="nav-btn">Понравившееся</a></div></header><div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div><div class="container"><div class="hero"><h1>Каталог Читов</h1><input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск..."></div><div class="cheat-grid">{cards_html}</div></div>{SCRIPTS}</body></html>')
 
 @app.route('/cheat/<id>')
 def detail(id):
     item = DATABASE.get(id)
-    if not item: return "Cheat Not Found", 404
-    
+    if not item: return "Not Found", 404
     return render_template_string(f'''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{item['name']} - HK</title>
-        {STYLE}
-    </head>
-    <body>
+    <html><head>{STYLE}</head><body>
         <header><div class="nav-container"><a href="/" class="nav-btn">Главная</a><a href="/favs" class="nav-btn">Понравившееся</a></div></header>
-        <div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div>
-        
-        <div class="container">
-            <div class="detail-view">
-                <a href="/" class="back-btn">← Назад в каталог</a>
-                
-                <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-                    <h1 style="font-size:4rem; font-weight:900;">{item['name']}</h1>
-                    <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
-                </div>
-
-                <div class="dl-section">
-                    <span class="version-tag" style="font-size:1.2rem; padding:10px 20px; border-color:var(--accent); color:white;">Версия: {item['ver']}</span>
-                    <p style="font-size:1.5rem; margin:30px 0; color:#ccc;">{item['desc']}</p>
-                    <button onclick="forceDownload('{item['file_url']}', '{id}.jar')" class="big-dl-btn">Скачать .JAR Клиент</button>
-                </div>
+        <div class="container"><div class="detail-view">
+            <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h1 style="font-size:4rem;">{item['name']}</h1>
+                <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
             </div>
-        </div>
-        {SCRIPTS}
-    </body>
-    </html>
-    ''')
+            <div class="dl-section">
+                <p style="font-size:1.5rem; margin-bottom:30px; color:#ccc;">{item['desc']}</p>
+                <button onclick="forceDownload('{item['file_url']}', '{id}.jar')" class="big-dl-btn">СКАЧАТЬ .JAR КЛИЕНТ</button>
+            </div>
+        </div></div>{SCRIPTS}
+    </body></html>''')
 
 @app.route('/favs')
 def favorites_page():
     return render_template_string(f'''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Избранное - HK</title>
-        {STYLE}
-    </head>
-    <body>
-        <div class="bg-glow"></div>
+    <html><head>{STYLE}</head><body>
         <header><div class="nav-container"><a href="/" class="nav-btn">Главная</a><a href="/favs" class="nav-btn active">Понравившееся</a></div></header>
-        <div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div>
-
         <div class="container">
-            <div class="hero">
-                <h1>Твоя Коллекция</h1>
-            </div>
-
-            <div id="fav-display" class="cheat-grid">
-                </div>
+            <div class="hero"><h1>Твоя Коллекция</h1></div>
+            <div id="fav-display" class="cheat-grid"></div>
         </div>
-
         {SCRIPTS}
         <script>
             const data = {DATABASE};
-            let f = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
+            let f = getFavs();
             let grid = document.getElementById('fav-display');
-
-            if(f.length === 0) {{
-                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:100px; color:#333; font-size:2rem; font-weight:900;">ПУСТО</div>';
+            if(!f.length) {{
+                grid.innerHTML = '<h1 style="grid-column:1/-1; text-align:center; opacity:0.1; font-size:5rem; margin-top:100px;">ПУСТО</h1>';
             }} else {{
                 f.forEach(item => {{
                     let c = data[item.id];
                     if(c) {{
                         let tags = c.tags.map(t => `<span class="tag">${{t}}</span>`).join('');
                         grid.innerHTML += `
-                            <div class="cheat-card" onclick="window.location.href='/cheat/${{item.id}}'">
-                                <div class="tag-container">${{tags}}</div>
-                                <h3>${{c.name}}</h3>
-                                <p>${{c.desc}}</p>
-                                <div class="card-meta">
-                                    <span class="version-tag">${{c.ver}}</span>
-                                    <button class="heart-btn liked">❤</button>
-                                </div>
-                            </div>`;
+                        <div class="cheat-card" id="card-fav-${{item.id}}" onclick="window.location.href='/cheat/${{item.id}}'">
+                            <div class="tag-container">${{tags}}</div>
+                            <h3>${{c.name}}</h3>
+                            <p style="color:var(--text-dim); margin-bottom:20px;">${{c.desc}}</p>
+                            <div class="card-meta">
+                                <span class="version-tag">${{c.ver}}</span>
+                                <button class="heart-btn liked" data-id="${{item.id}}" onclick="event.stopPropagation(); updateFavs('${{item.id}}', '${{c.name}}', true)">❤</button>
+                            </div>
+                        </div>`;
                     }}
                 }});
             }}
         </script>
-    </body>
-    </html>
-    ''')
+    </body></html>''')
 
 if __name__ == '__main__':
     app.run(debug=True)
