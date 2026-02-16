@@ -343,6 +343,18 @@ def home():
         {SCRIPTS}
     </body></html>''')
 
+@app.route('/favs')
+def favs():
+    return render_template_string(f'''
+    <html><head>{STYLE}</head><body>
+        <div class="bg-glow"></div>
+        {get_nav("favs")}
+        <div class="container">
+            <h1 style="text-align:center; margin-top:40px;">Понравившееся</h1>
+            <div id="favs-list" class="grid"></div>
+        </div>
+        {SCRIPTS}
+    </body></html>''')
 
 @app.route('/cheat/<id>')
 def detail(id):
