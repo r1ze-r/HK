@@ -154,5 +154,3 @@ def favs():
             else favs.forEach(i => list.innerHTML += `<a href="/${{i.id}}" class="card"><h3>${{i.name}}</h3><p>Твой выбор.</p></a>`);
         </script></body></html>''')
 
-if __name__ == "__main__":
-    app.run() 
