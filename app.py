@@ -378,11 +378,13 @@ def detail(id):
     item = DATABASE.get(id)
     if not item: return "404", 404
     
-    # Определяем, какое видео показать
+    # Проверяем расширение для выбора видео
     is_zip = item['file_url'].lower().endswith('.zip')
-    video_src = "твой_видос_для_zip.mp4" if is_zip else "2026-02-16 22-54-44.mp4"
+    video_src = "твой_видос_для_zip.mp4" if is_zip else "2026-02-16-22-54-44.mp4"
+    video_label = ".ZIP" if is_zip else ".JAR"
 
-    return render_template_string(f'''
+    # Собираем HTML по частям, чтобы Python не ругался на скобки в стилях
+    html_content = f'''
     <html><head>{STYLE}</head><body>
         <div class="bg-glow"></div>
         {get_nav("detail")}
@@ -401,20 +403,20 @@ def detail(id):
                     
                     <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ ОТ HK</button>
 
-                    <div style="width: 100%; max-width: 400px; border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border); box-shadow: 0 0 20px var(--accent-glow);">
+                    <div style="width: 100%; max-width: 400px; border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border);">
                         <video width="100%" height="auto" controls style="display: block;">
                             <source src="/static/{video_src}" type="video/mp4">
-                            Ваш браузер не поддерживает видео.
                         </video>
                         <div style="background: #151515; padding: 8px; text-align: center; font-size: 0.8rem; font-weight: 700;">
-                            Гайд по установке {".ZIP" if is_zip else ".JAR"}
+                            Гайд по установке {video_label}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         {SCRIPTS}
-    </body></html>''')
+    </body></html>'''
+    return render_template_string(html_content)
 
 if __name__ == '__main__':
     app.run(debug=True)
