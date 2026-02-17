@@ -343,9 +343,10 @@ def home():
         </div>
         {SCRIPTS}
     </body></html>''')
+
 @app.route('/favs')
 def favs():
-    # Мы превращаем твою базу данных в JSON-строку, чтобы браузер её "увидел"
+    import json
     db_json = json.dumps(DATABASE)
     
     return render_template_string(f'''
@@ -354,44 +355,41 @@ def favs():
         {get_nav("favs")}
         <div class="container">
             <h1 style="text-align:center; margin: 40px 0;">Понравившееся</h1>
-            <div id="favs-list" class="grid">
+            <div id="favs-list" class="cheat-grid">
                 </div>
         </div>
         {SCRIPTS}
         <script>
             document.addEventListener('DOMContentLoaded', () => {{
-                // Получаем ID понравившихся элементов из локальной памяти браузера
-                const favs = JSON.parse(localStorage.getItem('hk_favs') || '{{}}');
+                // Используем ключ hk_v3_favs, как в твоих основных скриптах
+                const favs = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
                 const container = document.getElementById('favs-list');
-                
-                // Передаем базу данных из Python прямо в JavaScript переменную
                 const db = {db_json};
 
-                // Если в избранном ничего нет
-                if (Object.keys(favs).length === 0) {{
+                if (favs.length === 0) {{
                     container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; opacity:0.5; font-size:1.5rem; margin-top:50px;">Тут пока пусто... Добавьте что-нибудь!</p>';
                     return;
                 }}
 
                 let html = '';
-                for (const id in favs) {{
-                    const item = db[id];
-                    if (!item) continue;
+                favs.forEach(fav => {{
+                    const item = db[fav.id];
+                    if (!item) return;
 
-                    // Рисуем точно такую же карточку, как на главной
+                    // Верстка карточки 1 в 1 как на главной, с твоими классами
                     html += `
-                    <div class="card" onclick="location.href='/cheat/${{id}}'">
-                        <div class="card-tags">
+                    <div class="cheat-card" onclick="window.location.href='/cheat/${{fav.id}}'">
+                        <div class="tag-container">
                             ${{item.tags.map(t => `<span class="tag">${{t}}</span>`).join('')}}
                         </div>
-                        <h3 style="margin:10px 0; font-size:1.6rem;">${{item.name}}</h3>
-                        <p style="color:#888; font-size:0.95rem; flex-grow:1;">${{item.desc.substring(0, 100)}}...</p>
-                        <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
+                        <h3>${{item.name}}</h3>
+                        <p style="color:var(--text-dim); margin-bottom:20px;">${{item.desc}}</p>
+                        <div class="card-meta">
                             <span class="version-tag">${{item.ver}}</span>
-                            <button class="heart-btn active" onclick="event.stopPropagation(); updateFavs('${{id}}', '${{item.name}}'); location.reload();">❤</button>
+                            <button class="heart-btn liked" data-id="${{fav.id}}" onclick="event.stopPropagation(); updateFavs('${{fav.id}}', '${{item.name}}'); location.reload();">❤</button>
                         </div>
                     </div>`;
-                }}
+                }});
                 container.innerHTML = html;
             }});
         </script>
