@@ -272,7 +272,7 @@ SCRIPTS = '''
         let versionTag = card.querySelector('.version-tag').innerText.toLowerCase();
         
         // Очищаем версию от текста, оставляем только цифры (напр. "1.21.11")
-        script_code = r"let cleanVersion = versionTag.replace(/[^\d.]/g, '');"
+        js_code = r"let cleanVersion = versionTag.replace(/[^\d.]/g, '');"
 
         // Если в запросе только цифры и точки, считаем, что ищут версию
         let isVersionQuery = /^[0-9.]+$/.test(query);
