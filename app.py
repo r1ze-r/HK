@@ -344,8 +344,8 @@ def home():
     </body></html>''')
 @app.route('/favs')
 def favs():
-    # Превращаем ключи и значения базы в JSON для JavaScript
     import json
+    # Превращаем базу в строку, чтобы JavaScript её понял
     db_json = json.dumps(DATABASE)
     
     return render_template_string(f'''
@@ -354,15 +354,14 @@ def favs():
         {get_nav("favs")}
         <div class="container">
             <h1 style="text-align:center; margin: 40px 0;">Понравившееся</h1>
-            <div id="favs-list" class="grid">
-                </div>
+            <div id="favs-list" class="grid"></div>
         </div>
         {SCRIPTS}
         <script>
             document.addEventListener('DOMContentLoaded', () => {{
                 const favs = JSON.parse(localStorage.getItem('hk_favs') || '{{}}');
                 const container = document.getElementById('favs-list');
-                const db = {db_json}; // Теперь JS видит всю твою базу
+                const db = {db_json}; // Твоя база данных теперь тут
 
                 if (Object.keys(favs).length === 0) {{
                     container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; opacity:0.5; font-size:1.5rem; margin-top:50px;">Тут пока пусто... Добавьте что-нибудь!</p>';
@@ -391,6 +390,7 @@ def favs():
             }});
         </script>
     </body></html>''')
+    
 @app.route('/cheat/<id>')
 def detail(id):
     item = DATABASE.get(id)
