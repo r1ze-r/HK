@@ -27,7 +27,7 @@ DATABASE = {
         'ver': '1.20.1',
         'tags': ['Resourcepack', 'Survival', 'Popular'],
         'color': '#ffffff',
-        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/HK_Coffee-Client-Fabric-1.20.1.jar'
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Coffee-Client-Fabric-1.20.1.jar'
     },
     'meteor': {
         'name': 'Meteor Client',
