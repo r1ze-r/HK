@@ -310,7 +310,49 @@ SCRIPTS = '''
     });
 </script>
 '''
+@media (max-width: 600px) {
+    /* 1. ФИКСИРОВАННАЯ ШАПКА */
+    .header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 60px;
+        background: #111; /* Темный фон */
+        border-bottom: 1px solid #333; /* Та самая серая тонкая полоска */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 15px;
+        z-index: 1000;
+    }
 
+    /* 2. ГЛАВНЫЙ ЭКРАН (отступ сверху, чтобы шапка не закрывала контент) */
+    .main-content {
+        margin-top: 70px; 
+        text-align: center;
+    }
+
+    /* 3. СТРАНИЦА ЧИТА (Внутри карточки) */
+    .detail-page-header {
+        display: flex;
+        justify-content: space-between; /* Назад слева, Версия в центре, Сердце справа */
+        align-items: center;
+        padding: 20px;
+    }
+
+    .version-tag {
+        /* По середине вверху */
+        font-weight: bold;
+        color: #ff4444; 
+    }
+
+    /* Описание без кнопок, просто текст */
+    .description-text {
+        padding: 20px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+}
 def get_nav(page):
     return f'''
     <nav style="display: flex; justify-content: center; align-items: center; padding: 20px 50px; position: relative;">
