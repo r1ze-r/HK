@@ -344,6 +344,10 @@ def home():
     </body></html>''')
 @app.route('/favs')
 def favs():
+    # Превращаем ключи и значения базы в JSON для JavaScript
+    import json
+    db_json = json.dumps(DATABASE)
+    
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
         <div class="bg-glow"></div>
@@ -356,24 +360,19 @@ def favs():
         {SCRIPTS}
         <script>
             document.addEventListener('DOMContentLoaded', () => {{
-                // 1. Берем данные из памяти браузера
                 const favs = JSON.parse(localStorage.getItem('hk_favs') || '{{}}');
                 const container = document.getElementById('favs-list');
-                
-                // 2. Данные из твоей DATABASE в Python (передаем в JS)
-                const db = {DATABASE};
+                const db = {db_json}; // Теперь JS видит всю твою базу
 
-                // 3. Если ничего не сохранено
                 if (Object.keys(favs).length === 0) {{
                     container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; opacity:0.5; font-size:1.5rem; margin-top:50px;">Тут пока пусто... Добавьте что-нибудь!</p>';
                     return;
                 }}
 
-                // 4. Генерируем карточки
                 let html = '';
                 for (const id in favs) {{
                     const item = db[id];
-                    if (!item) continue; // Пропускаем, если в базе такого нет
+                    if (!item) continue;
 
                     html += `
                     <div class="card" onclick="location.href='/cheat/${{id}}'">
@@ -392,7 +391,6 @@ def favs():
             }});
         </script>
     </body></html>''')
-
 @app.route('/cheat/<id>')
 def detail(id):
     item = DATABASE.get(id)
