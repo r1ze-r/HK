@@ -29,6 +29,14 @@ DATABASE = {
         'color': '#ffffff',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Coffee-Client-Fabric-1.20.1.jar'
     },
+     'freecam': {
+        'name': 'freecam',
+        'desc': 'Этот мод тебе позволяет летать! (но только визуал) хорошо подойдет для просмотра вражеских баз',
+        'ver': '1.21.11',
+        'tags': ['Resourcepack', 'Survival', 'Popular'],
+        'color': '#ffffff',
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Coffee-Client-Fabric-1.20.1.jar'
+    },
     'meteor': {
         'name': 'Meteor Client',
         'desc': 'Ультимативное решение для PVP и анархии. Гибкая настройка HUD и мощная система макросов.',
