@@ -231,15 +231,14 @@ STYLE = '''
 </style>
 '''
 
-# --- ENGINE SCRIPTS ---
-SCRIPTS = '''
+# --- ENGINE SCRIPTS (С исправленным поиском и мобильным дизайном) ---
+SCRIPTS = r'''
 <script>
     function getFavs() { return JSON.parse(localStorage.getItem('hk_v3_favs') || '[]'); }
 
     function updateFavs(id, name, isFavPage = false) {
         let favs = getFavs();
         let index = favs.findIndex(item => item.id === id);
-        
         if (index > -1) {
             favs.splice(index, 1);
             if(isFavPage) {
@@ -247,61 +246,42 @@ SCRIPTS = '''
                 if(card) {
                     card.style.transform = 'scale(0.8) translateY(20px)';
                     card.style.opacity = '0';
-                    setTimeout(() => { 
-                        card.remove();
-                        if(getFavs().length === 0) location.reload();
-                    }, 400);
+                    setTimeout(() => { card.remove(); if(getFavs().length === 0) location.reload(); }, 400);
                 }
             }
         } else {
             favs.push({id: id, name: name});
         }
-        
         localStorage.setItem('hk_v3_favs', JSON.stringify(favs));
-        
-        document.querySelectorAll(`.heart-btn[data-id="${id}"]`).forEach(btn => {
-            btn.classList.toggle('liked');
-        });
+        document.querySelectorAll(`.heart-btn[data-id="${id}"]`).forEach(btn => { btn.classList.toggle('liked'); });
     }
 
     function search() {
-    let query = document.getElementById('mainSearch').value.toLowerCase().trim();
-    document.querySelectorAll('.cheat-card').forEach(card => {
-        // Берем название (h3) и версию (.version-tag) отдельно
-        let name = card.querySelector('h3').innerText.toLowerCase();
-        let versionTag = card.querySelector('.version-tag').innerText.toLowerCase();
-        
-        // Очищаем версию от текста, оставляем только цифры (напр. "1.21.11")
-        js_code = r"let cleanVersion = versionTag.replace(/[^\d.]/g, '');"
+        let query = document.getElementById('mainSearch').value.toLowerCase().trim();
+        document.querySelectorAll('.cheat-card').forEach(card => {
+            let name = card.querySelector('h3').innerText.toLowerCase();
+            let versionTag = card.querySelector('.version-tag').innerText.toLowerCase();
+            
+            // Чистый JS без Python-вставок, чтобы Vercel не ругался
+            let cleanVersion = versionTag.replace(/[^\d.]/g, '');
+            let isVersionQuery = /^[0-9.]+$/.test(query);
 
-        // Если в запросе только цифры и точки, считаем, что ищут версию
-        let isVersionQuery = /^[0-9.]+$/.test(query);
-
-        let isMatch = false;
-        if (isVersionQuery) {
-            // Строгое совпадение для версии: 1.21 не покажет 1.21.11
-            isMatch = (query === cleanVersion);
-        } else {
-            // Мягкий поиск по названию: "мет" найдет "Meteor"
-            isMatch = name.includes(query);
-        }
-
-        card.style.display = isMatch ? 'flex' : 'none';
-    });
-}
+            let isMatch = isVersionQuery ? cleanVersion.includes(query) : name.includes(query);
+            card.style.display = isMatch ? 'flex' : 'none';
+        });
+    }
 
     function forceDownload(url, name) {
-    // Эта магия сама вытягивает .jar или .zip из твоей прямой ссылки на GitHub
-    const extension = url.split('.').pop(); 
-    const fileName = "HK_" + name.replace(/\s+/g, '_') + "." + extension;
-    
-    fetch(url).then(t => t.blob()).then(b => {
-        var a = document.createElement("a");
-        a.href = URL.createObjectURL(b);
-        a.setAttribute("download", fileName);
-        a.click();
-    });
-}
+        const extension = url.split('.').pop(); 
+        const fileName = "HK_" + name.replace(/\s+/g, '_') + "." + extension;
+        fetch(url).then(t => t.blob()).then(b => {
+            var a = document.createElement("a");
+            a.href = URL.createObjectURL(b);
+            a.setAttribute("download", fileName);
+            a.click();
+        });
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         let favs = getFavs();
         document.querySelectorAll('.heart-btn').forEach(btn => {
