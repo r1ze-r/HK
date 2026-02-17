@@ -1,4 +1,5 @@
 from flask import Flask, render_template_string, jsonify
+import json
 
 app = Flask(__name__)
 
@@ -344,8 +345,7 @@ def home():
     </body></html>''')
 @app.route('/favs')
 def favs():
-    import json
-    # Превращаем базу в строку, чтобы JavaScript её понял
+    # Мы превращаем твою базу данных в JSON-строку, чтобы браузер её "увидел"
     db_json = json.dumps(DATABASE)
     
     return render_template_string(f'''
@@ -354,15 +354,20 @@ def favs():
         {get_nav("favs")}
         <div class="container">
             <h1 style="text-align:center; margin: 40px 0;">Понравившееся</h1>
-            <div id="favs-list" class="grid"></div>
+            <div id="favs-list" class="grid">
+                </div>
         </div>
         {SCRIPTS}
         <script>
             document.addEventListener('DOMContentLoaded', () => {{
+                // Получаем ID понравившихся элементов из локальной памяти браузера
                 const favs = JSON.parse(localStorage.getItem('hk_favs') || '{{}}');
                 const container = document.getElementById('favs-list');
-                const db = {db_json}; // Твоя база данных теперь тут
+                
+                // Передаем базу данных из Python прямо в JavaScript переменную
+                const db = {db_json};
 
+                // Если в избранном ничего нет
                 if (Object.keys(favs).length === 0) {{
                     container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; opacity:0.5; font-size:1.5rem; margin-top:50px;">Тут пока пусто... Добавьте что-нибудь!</p>';
                     return;
@@ -373,6 +378,7 @@ def favs():
                     const item = db[id];
                     if (!item) continue;
 
+                    // Рисуем точно такую же карточку, как на главной
                     html += `
                     <div class="card" onclick="location.href='/cheat/${{id}}'">
                         <div class="card-tags">
