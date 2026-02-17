@@ -238,7 +238,7 @@ def get_nav(page):
         <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
             <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
             <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
-    # --- ENGINE SCRIPTS ---
+    # --- ENGINE SCRIPTS (С фиксом ошибки и мобильным дизайном) ---
 SCRIPTS = r'''
 <script>
     function getFavs() { return JSON.parse(localStorage.getItem('hk_v3_favs') || '[]'); }
@@ -269,7 +269,7 @@ SCRIPTS = r'''
             let name = card.querySelector('h3').innerText.toLowerCase();
             let versionTag = card.querySelector('.version-tag').innerText.toLowerCase();
             
-            // ИСПРАВЛЕННАЯ СТРОКА (Теперь это чистый JS, Python не ругается)
+            // ВОТ ТУТ БЫЛА ОШИБКА. ТЕПЕРЬ ЭТО ЧИСТЫЙ JS:
             let cleanVersion = versionTag.replace(/[^\d.]/g, '');
 
             let isVersionQuery = /^[0-9.]+$/.test(query);
@@ -296,36 +296,31 @@ SCRIPTS = r'''
 </script>
 
 <style>
-    /* ФИКС ДИЗАЙНА ПОД МОБИЛКУ */
+    /* МОБИЛЬНЫЙ ДИЗАЙН (как на скрине) */
     @media (max-width: 600px) {
         nav {
             position: fixed !important;
             top: 0; left: 0; width: 100%; height: 55px;
-            background: #111 !important;
+            background: #0a0a0a !important;
             border-bottom: 1px solid #333 !important;
             z-index: 10000;
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 15px;
         }
         .container { padding-top: 80px !important; }
-        .hero h1 { font-size: 2.2rem !important; }
+        .hero h1 { font-size: 2.2rem !important; margin-top: 10px; }
+        .search-wrapper { margin: 20px auto; }
         .cheat-grid { grid-template-columns: 1fr !important; gap: 15px; }
-        .tg-anchor { left: 10px; right: 10px; bottom: 10px; }
-        .tg-btn { width: 100%; justify-content: center; }
+        .tg-anchor { left: 15px; right: 15px; bottom: 15px; position: fixed; }
+        .tg-btn { width: 100%; justify-content: center; border-radius: 12px; }
         
-        /* Кнопка назад и сердце на странице чита */
-        .detail-view { padding-top: 10px; }
+        /* Стили страницы чита */
+        .detail-view { gap: 15px !important; }
+        .detail-view h1 { font-size: 2.5rem !important; }
+        .big-dl-btn { font-size: 1.2rem; padding: 18px; }
     }
 </style>
-'''    </a>
-        
-        <div style="position: absolute; right: 50px; display: flex; gap: 20px;">
-            <a href="/" style="text-decoration: none; color: white; opacity: 0.8;">Главная</a>
-            <a href="/favs" style="text-decoration: none; color: white; opacity: 0.8;">Понравившееся</a>
-        </div>
-    </nav>
-    '''
-    
+'''
 @app.route('/')
 def home():
     cards_html = ""
