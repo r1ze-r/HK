@@ -311,46 +311,48 @@ SCRIPTS = '''
 </script>
 '''
 @media (max-width: 600px) {
-    /* 1. ФИКСИРОВАННАЯ ШАПКА */
-    .header {
+    /* Фиксированная серая полоска вверху */
+    .top-nav {
         position: fixed;
         top: 0;
+        left: 0;
         width: 100%;
-        height: 60px;
-        background: #111; /* Темный фон */
-        border-bottom: 1px solid #333; /* Та самая серая тонкая полоска */
+        height: 50px;
+        background: #111;
+        border-bottom: 1px solid #333; /* Та самая тонкая серая линия */
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 0 15px;
-        z-index: 1000;
+        z-index: 9999;
     }
 
-    /* 2. ГЛАВНЫЙ ЭКРАН (отступ сверху, чтобы шапка не закрывала контент) */
-    .main-content {
-        margin-top: 70px; 
-        text-align: center;
-    }
-
-    /* 3. СТРАНИЦА ЧИТА (Внутри карточки) */
-    .detail-page-header {
+    /* На главной: Лого и Названия справа кнопки */
+    .nav-links {
         display: flex;
-        justify-content: space-between; /* Назад слева, Версия в центре, Сердце справа */
+        gap: 10px;
+        font-size: 12px;
+    }
+
+    /* На странице чита: Назад (слева), Версия (центр), Сердце (справа) */
+    .detail-header {
+        display: flex;
+        justify-content: space-between;
         align-items: center;
-        padding: 20px;
+        padding-top: 60px; /* Отступ под фиксированную шапку */
     }
 
-    .version-tag {
-        /* По середине вверху */
-        font-weight: bold;
-        color: #ff4444; 
-    }
+    .back-btn { font-size: 14px; }
+    .version-center { font-weight: bold; color: #aaa; }
+    .heart-right { color: #ff4444; }
 
-    /* Описание без кнопок, просто текст */
-    .description-text {
-        padding: 20px;
-        font-size: 16px;
-        line-height: 1.5;
+    /* Описание чита под названием */
+    .description-box {
+        margin-top: 15px;
+        padding: 0 10px;
+        font-size: 14px;
+        color: #ddd;
+        text-align: left;
     }
 }
 def get_nav(page):
