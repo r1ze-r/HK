@@ -231,7 +231,14 @@ STYLE = '''
 </style>
 '''
 
-# --- ENGINE SCRIPTS (С исправленным поиском и мобильным дизайном) ---
+
+def get_nav(page):
+    return f'''
+    <nav style="display: flex; justify-content: center; align-items: center; padding: 20px 50px; position: relative;">
+        <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
+            <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
+            <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
+    # --- ENGINE SCRIPTS ---
 SCRIPTS = r'''
 <script>
     function getFavs() { return JSON.parse(localStorage.getItem('hk_v3_favs') || '[]'); }
@@ -262,10 +269,10 @@ SCRIPTS = r'''
             let name = card.querySelector('h3').innerText.toLowerCase();
             let versionTag = card.querySelector('.version-tag').innerText.toLowerCase();
             
-            // Чистый JS без Python-вставок, чтобы Vercel не ругался
+            // ИСПРАВЛЕННАЯ СТРОКА (Теперь это чистый JS, Python не ругается)
             let cleanVersion = versionTag.replace(/[^\d.]/g, '');
-            let isVersionQuery = /^[0-9.]+$/.test(query);
 
+            let isVersionQuery = /^[0-9.]+$/.test(query);
             let isMatch = isVersionQuery ? cleanVersion.includes(query) : name.includes(query);
             card.style.display = isMatch ? 'flex' : 'none';
         });
@@ -276,9 +283,7 @@ SCRIPTS = r'''
         const fileName = "HK_" + name.replace(/\s+/g, '_') + "." + extension;
         fetch(url).then(t => t.blob()).then(b => {
             var a = document.createElement("a");
-            a.href = URL.createObjectURL(b);
-            a.setAttribute("download", fileName);
-            a.click();
+            a.href = URL.createObjectURL(b); a.setAttribute("download", fileName); a.click();
         });
     }
 
@@ -289,59 +294,30 @@ SCRIPTS = r'''
         });
     });
 </script>
-'''
-@media (max-width: 600px) {
-    /* Фиксированная серая полоска вверху */
-    .top-nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 50px;
-        background: #111;
-        border-bottom: 1px solid #333; /* Та самая тонкая серая линия */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 15px;
-        z-index: 9999;
-    }
 
-    /* На главной: Лого и Названия справа кнопки */
-    .nav-links {
-        display: flex;
-        gap: 10px;
-        font-size: 12px;
+<style>
+    /* ФИКС ДИЗАЙНА ПОД МОБИЛКУ */
+    @media (max-width: 600px) {
+        nav {
+            position: fixed !important;
+            top: 0; left: 0; width: 100%; height: 55px;
+            background: #111 !important;
+            border-bottom: 1px solid #333 !important;
+            z-index: 10000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 15px;
+        }
+        .container { padding-top: 80px !important; }
+        .hero h1 { font-size: 2.2rem !important; }
+        .cheat-grid { grid-template-columns: 1fr !important; gap: 15px; }
+        .tg-anchor { left: 10px; right: 10px; bottom: 10px; }
+        .tg-btn { width: 100%; justify-content: center; }
+        
+        /* Кнопка назад и сердце на странице чита */
+        .detail-view { padding-top: 10px; }
     }
-
-    /* На странице чита: Назад (слева), Версия (центр), Сердце (справа) */
-    .detail-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 60px; /* Отступ под фиксированную шапку */
-    }
-
-    .back-btn { font-size: 14px; }
-    .version-center { font-weight: bold; color: #aaa; }
-    .heart-right { color: #ff4444; }
-
-    /* Описание чита под названием */
-    .description-box {
-        margin-top: 15px;
-        padding: 0 10px;
-        font-size: 14px;
-        color: #ddd;
-        text-align: left;
-    }
-}
-def get_nav(page):
-    return f'''
-    <nav style="display: flex; justify-content: center; align-items: center; padding: 20px 50px; position: relative;">
-        <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
-            <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
-            <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
-        </a>
+</style>
+'''    </a>
         
         <div style="position: absolute; right: 50px; display: flex; gap: 20px;">
             <a href="/" style="text-decoration: none; color: white; opacity: 0.8;">Главная</a>
