@@ -1,7 +1,7 @@
 from flask import Flask, render_template_string, jsonify
 import json
 
-app = Flask(__name__) 
+app = Flask(__name__)
 
 # --- CONFIG DATA (Твоя база, где ты сам добавляешь читы) ---
 DATABASE = {
