@@ -21,7 +21,7 @@ DATABASE = {
         'color': '#ffffff',
         'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Xray_Ultimate_1.21_v5.3.1.zip'
     },
-    'coffee ': {
+    'coffee': {
         'name': 'Coffee Client',
         'desc': 'Любишь кофе? Тогда этот чит для тебя. Лучший дизайн, много функций и многое другое.',
         'ver': '1.20.1',
