@@ -269,8 +269,6 @@ SCRIPTS = r'''
             let name = card.querySelector('h3').innerText.toLowerCase();
             let versionTag = card.querySelector('.version-tag').innerText.toLowerCase();
             
-            // ВОТ ТУТ БЫЛА ОШИБКА. ТЕПЕРЬ ЭТО ЧИСТЫЙ JS:
-            
 
             let isVersionQuery = /^[0-9.]+$/.test(query);
             let isMatch = isVersionQuery ? cleanVersion.includes(query) : name.includes(query);
