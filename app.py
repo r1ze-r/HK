@@ -3,6 +3,9 @@ import json
 
 app = Flask(__name__)
 
+[project.scripts]
+app = "app:app"
+
 # --- CONFIG DATA (Твоя база, где ты сам добавляешь читы) ---
 DATABASE = {
     'wurst': {
