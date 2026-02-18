@@ -366,5 +366,5 @@ def detail(id):
         {SCRIPTS}
     </body></html>''')
 
-if __name__ == '__main__':
+
     
