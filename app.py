@@ -51,15 +51,191 @@ DATABASE = {
 }
 
 
+# --- FULL PORSCHE EDITION STYLES (Тот самый стиль) ---
+STYLE = '''
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root {
+        --bg: #050505;
+        --card-bg: #111111;
+        --card-border: #222222;
+        --accent: #ff4444;
+        --accent-glow: rgba(255, 68, 68, 0.3);
+        --text-main: #ffffff;
+        --text-dim: #888888;
+        --tg-color: #24A1DE;
+        --green: #2ecc71;
+        --glass: rgba(20, 20, 20, 0.7);
+        --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { 
+        margin: 0; 
+        padding: 0; 
+        box-sizing: border-box; 
+        -webkit-tap-highlight-color: transparent; 
+    }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Inter', sans-serif;
+        line-height: 1.6;
+        overflow-x: hidden;
+        min-height: 100vh;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) var(--bg);
+    }
+
+    body::-webkit-scrollbar { width: 6px; }
+    body::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+    .bg-glow {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 1) 0%, rgba(5, 5, 5, 1) 100%);
+        z-index: -1;
+    }
+
+    header {
+        position: sticky; top: 0; z-index: 1000;
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--card-border);
+        padding: 15px 0;
+    }
+
+    .nav-container {
+        max-width: 1200px; margin: 0 auto;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0 20px;
+    }
+
+    .logo {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: var(--transition);
+    }
+
+    .logo:hover { transform: scale(1.02); }
+
+    .logo-img {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        object-fit: cover;
+        box-shadow: 0 0 20px var(--accent-glow);
+        border: 1px solid var(--card-border);
+    }
+
+    .logo-text {
+        font-weight: 900;
+        font-size: 1.6rem;
+        letter-spacing: -1px;
+        color: white;
+    }
+
+    .nav-links { display: flex; gap: 15px; }
+
+    .nav-btn {
+        padding: 12px 28px; border-radius: 14px;
+        text-decoration: none; color: var(--text-dim);
+        font-weight: 700; font-size: 1rem;
+        background: #151515; border: 1px solid #252525;
+        transition: var(--transition);
+        display: flex; align-items: center; gap: 8px;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+        color: white; background: #222; border-color: var(--accent);
+        box-shadow: 0 0 20px var(--accent-glow);
+        transform: translateY(-2px);
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+
+    .hero { text-align: center; margin-bottom: 70px; }
+    .hero h1 { 
+        font-size: 4rem; font-weight: 900; letter-spacing: -2px; 
+        margin-bottom: 15px; background: linear-gradient(to bottom, #fff 0%, #666 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .search-wrapper { position: relative; width: 100%; max-width: 500px; margin: 30px auto; }
+    .search-input {
+        width: 100%; background: #111; border: 1px solid #222;
+        padding: 18px 30px; border-radius: 20px; color: white;
+        font-size: 1.1rem; outline: none; transition: var(--transition);
+        text-align: center;
+    }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); }
+
+    .cheat-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 30px; animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    .cheat-card {
+        background: var(--card-bg); border: 1px solid var(--card-border);
+        border-radius: 28px; padding: 35px; position: relative;
+        transition: var(--transition); cursor: pointer;
+        display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    .cheat-card:hover {
+        border-color: #444; transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .cheat-card h3 { font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-bottom: 12px; }
+    
+    .tag-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .tag { font-size: 0.7rem; font-weight: 700; background: #1a1a1a; padding: 4px 12px; border-radius: 6px; color: #666; text-transform: uppercase; }
+
+    .card-meta { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+    .version-tag { background: #000; padding: 5px 12px; border-radius: 10px; border: 1px solid #222; font-size: 0.8rem; color: #aaa; }
+
+    .heart-btn {
+        width: 45px; height: 45px; border-radius: 12px;
+        background: #1a1a1a; border: none; color: #333;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; cursor: pointer; transition: 0.3s;
+    }
+    .heart-btn.liked { color: var(--accent); background: rgba(255,68,68,0.1); }
+
+    .tg-anchor { position: fixed; left: 40px; bottom: 40px; z-index: 999; }
+    .tg-btn {
+        background: var(--tg-color); color: white; padding: 18px 30px; border-radius: 20px;
+        text-decoration: none; font-weight: 900; display: flex; align-items: center; gap: 12px;
+        box-shadow: 0 10px 30px rgba(36, 161, 222, 0.4); transition: 0.3s;
+    }
+
+    .detail-view { display: flex; flex-direction: column; gap: 40px; }
+    .dl-section { width: 100%; padding: 40px; background: var(--card-bg); border-radius: 30px; border: 1px solid #222; }
+    .big-dl-btn {
+        background: var(--green); color: black; padding: 25px 60px;
+        border-radius: 20px; text-decoration: none; font-weight: 900;
+        font-size: 1.5rem; display: inline-block; cursor: pointer; border: none;
+        transition: var(--transition);
+    }
+    .big-dl-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(46, 204, 113, 0.4); }
+
+    @media (max-width: 800px) {
+        .nav-container { flex-direction: column; gap: 15px; }
+        .hero h1 { font-size: 2.5rem; }
+        .tg-anchor { left: 20px; bottom: 20px; right: 20px; }
+        .tg-btn { justify-content: center; width: 100%; }
+        .cheat-grid { grid-template-columns: 1fr; }
+    }
+</style>
+'''
 
 
 
-def get_nav(page):
-    return f'''
-    <nav style="display: flex; justify-content: center; align-items: center; padding: 20px 50px; position: relative;">
-        <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
-            <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
-            <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
 
 @app.route('/')
 def home():
