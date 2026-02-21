@@ -276,46 +276,58 @@ def home():
         {SCRIPTS}
     </body></html>''')
 
-
+@app.route('/favs')
+def favs():
+    import json
+    db_json = json.dumps(DATABASE)
     
-@app.route('/cheat/<id>')
-def detail(id):
-    item = DATABASE.get(id)
-    if not item: return "404", 404
-    
-   # Видео будет одно для всех, как ты и просил
-    video_file = "2026-02-16-22-54-44.mp4" 
-
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
         <div class="bg-glow"></div>
-        {get_nav("detail")}
-        <div class="container" style="padding-top: 20px;">
-            <div class="detail-view" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
-                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                    <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
-                    <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
+        {get_nav("favs")}
+        <div class="container">
+            <h1 style="text-align:center; margin: 40px 0;">Понравившееся</h1>
+            <div id="favs-list" class="cheat-grid">
                 </div>
-
-                <h1 style="font-size:3rem; margin:0;">{item['name']}</h1>
-
-                <div class="dl-section" style="padding: 25px; display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%;">
-                    <span class="version-tag">Версия: {item['ver']}</span>
-                    <p style="font-size:1.1rem; color:#ccc; text-align:center; margin:0;">{item['desc']}</p>
-                    
-                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ ОТ HK</button>
-
-                    <div style="width: 100%; max-width: 400px; border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border); margin-top: 10px;">
-                        <video width="100%" height="auto" controls style="display: block;">
-                            <source src="/static/{video_file}" type="video/mp4">
-                            Браузер не тянет видео
-                        </video>
-                    </div>
-                </div>
-            </div>
         </div>
         {SCRIPTS}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {{
+                // Используем ключ hk_v3_favs, как в твоих основных скриптах
+                const favs = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
+                const container = document.getElementById('favs-list');
+                const db = {db_json};
+
+                if (favs.length === 0) {{
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; opacity:0.5; font-size:1.5rem; margin-top:50px;">Тут пока пусто... Добавьте что-нибудь!</p>';
+                    return;
+                }}
+
+                let html = '';
+                favs.forEach(fav => {{
+                    const item = db[fav.id];
+                    if (!item) return;
+
+                    // Верстка карточки 1 в 1 как на главной, с твоими классами
+                    html += `
+                    <div class="cheat-card" onclick="window.location.href='/cheat/${{fav.id}}'">
+                        <div class="tag-container">
+                            ${{item.tags.map(t => `<span class="tag">${{t}}</span>`).join('')}}
+                        </div>
+                        <h3>${{item.name}}</h3>
+                        <p style="color:var(--text-dim); margin-bottom:20px;">${{item.desc}}</p>
+                        <div class="card-meta">
+                            <span class="version-tag">${{item.ver}}</span>
+                            <button class="heart-btn liked" data-id="${{fav.id}}" onclick="event.stopPropagation(); updateFavs('${{fav.id}}', '${{item.name}}'); location.reload();">❤</button>
+                        </div>
+                    </div>`;
+                }});
+                container.innerHTML = html;
+            }});
+        </script>
     </body></html>''')
+    
+
 
 if __name__ == "__main__":
     
