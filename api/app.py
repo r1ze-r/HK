@@ -3,8 +3,7 @@ import json
 
 app = Flask(__name__)
 
-[project.scripts]
-app = "app:app"
+
 
 # --- CONFIG DATA (Твоя база, где ты сам добавляешь читы) ---
 DATABASE = {
@@ -234,46 +233,12 @@ STYLE = '''
 </style>
 '''
 
-# --- JS СКРИПТЫ ---
-SCRIPTS = '''
-<script>
-function updateFavs(id, name){
-    let favs = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
-    const index = favs.findIndex(f => f.id === id);
-    if(index !== -1){ favs.splice(index,1); }
-    else{ favs.push({id,name}); }
-    localStorage.setItem('hk_v3_favs', JSON.stringify(favs));
-}
-
-function forceDownload(url, name){
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-function search(){
-    const input = document.getElementById('mainSearch').value.toLowerCase();
-    document.querySelectorAll('.cheat-card').forEach(card=>{
-        const name = card.querySelector('h3').innerText.toLowerCase();
-        if(name.includes(input)) card.style.display='flex';
-        else card.style.display='none';
-    });
-}
-</script>
-'''
-
 def get_nav(page):
     return f'''
     <nav style="display: flex; justify-content: center; align-items: center; padding: 20px 50px; position: relative;">
         <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
             <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
             <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
-        </a>
-    </nav>
-    '''
 
 
 @app.route('/')
