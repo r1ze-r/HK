@@ -234,42 +234,15 @@ STYLE = '''
 </style>
 '''
 
+def get_nav(page):
+    return f'''
+    <nav style="display: flex; justify-content: center; align-items: center; padding: 20px 50px; position: relative;">
+        <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
+            <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
+            <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
 
 
 
-@app.route('/')
-def home():
-    cards_html = ""
-    for key, val in DATABASE.items():
-        tags = "".join([f'<span class="tag">{t}</span>' for t in val['tags']])
-        cards_html += f'''
-        <div class="cheat-card" onclick="window.location.href='/cheat/{key}'">
-            <div class="tag-container">{tags}</div>
-            <h3>{val['name']}</h3>
-            <p style="color:var(--text-dim); margin-bottom:20px;">{val['desc']}</p>
-            <div class="card-meta">
-                <span class="version-tag">{val['ver']}</span>
-                <button class="heart-btn" data-id="{key}" onclick="event.stopPropagation(); updateFavs('{key}', '{val['name']}')">❤</button>
-            </div>
-        </div>'''
-    
-    return render_template_string(f'''
-    <html><head>{STYLE}</head><body>
-        <div class="bg-glow"></div>
-        {get_nav("home")}
-        <div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div>
-        <div class="container">
-            <div class="hero">
-                
-                <h1>Каталог HK Hub</h1>
-                <div class="search-wrapper">
-                    <input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск читов...">
-                </div>
-            </div>
-            <div class="cheat-grid">{cards_html}</div>
-        </div>
-        {SCRIPTS}
-    </body></html>''')
 
 @app.route('/favs')
 def favs():
