@@ -6,6 +6,49 @@ app = Flask(__name__)
 [project.scripts]
 app = "app:app"
 
+# --- CONFIG DATA (Твоя база, где ты сам добавляешь читы) ---
+DATABASE = {
+    'wurst': {
+        'name': 'Wurst Client',
+        'desc': 'Король выживания. Включает в себя более 150 модулей: от AutoMine до KillAura. Идеально сбалансирован для игры на серверах без жесткого античита.',
+        'ver': '1.21.11',
+        'tags': ['Survival', 'Utility', 'Classic', 'Cheat'],
+        'color': '#ff4444',
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Wurst-Client1.21.11-hk.jar'
+    },
+    'xray': {
+        'name': 'X-Ray Ultimate',
+        'desc': 'Тот самый легендарный ресурспак. Подсвечивает руды и упрощает поиск алмазов. Идеально для тех, кто хочет результат без установки тяжелых читов.',
+        'ver': '1.21',
+        'tags': ['Resourcepack', 'Survival', 'Popular'],
+        'color': '#ffffff',
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Xray_Ultimate_1.21_v5.3.1.zip'
+    },
+    'coffee': {
+        'name': 'Coffee Client',
+        'desc': 'Любишь кофе? Тогда этот чит для тебя. Лучший дизайн, много функций и многое другое.',
+        'ver': '1.20.1',
+        'tags': ['Resourcepack', 'Survival', 'Popular'],
+        'color': '#ffffff',
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/freecam-fabric1.21.11.jar'
+    },
+     'freecam': {
+        'name': 'freecam',
+        'desc': 'Этот мод тебе позволяет летать! (но только визуал) хорошо подойдет для просмотра вражеских баз',
+        'ver': '1.21.11',
+        'tags': ['Resourcepack', 'Survival', 'Popular'],
+        'color': '#ffffff',
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/Coffee-Client-Fabric-1.20.1.jar'
+    },
+    'meteor': {
+        'name': 'Meteor Client',
+        'desc': 'Ультимативное решение для PVP и анархии. Гибкая настройка HUD и мощная система макросов.',
+        'ver': '1.21.11',
+        'tags': ['Anarchy', 'PVP', 'Cheat'],
+        'color': '#2ecc71',
+        'file_url': 'https://raw.githubusercontent.com/r1ze-r/HK/main/meteor-client-1.21.1-hk.jar'
+    }
+}
 
 
 # --- FULL PORSCHE EDITION STYLES (Тот самый стиль) ---
