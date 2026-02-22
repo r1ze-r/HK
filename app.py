@@ -243,18 +243,16 @@ def get_nav(page):
 @app.route('/')
 def home():
     cards_html = ""
-    for key, val in DATABASE.items():
-        tags = "".join([f'<span class="tag">{t}</span>' for t in val['tags']])
+for key, val in DATABASE.items():
+        # 248 строка: должна иметь 8 пробелов (или 2 таба) от края
         cards_html += f'''
-        <div class="cheat-card" onclick="window.location.href='/cheat/{key}'">
-            <div class="tag-container">{tags}</div>
-            <h3>{val['name']}</h3>
-            <p style="color:var(--text-dim); margin-bottom:20px;">{val['desc']}</p>
-            <div class="card-meta">
-                <span class="version-tag">{val['ver']}</span>
-                <button class="heart-btn" data-id="{key}" onclick="event.stopPropagation(); updateFavs('{key}', '{val['name']}')">❤</button>
-            </div>
-        </div>'''
+<div class="cheat-card" onclick="window.location.href='/cheat/{key}'">
+    <h3>{val['name']}</h3>
+    <p>{val['desc']}</p>
+    <div class="card-meta">
+        <span class="version-tag">{val['ver']}</span>
+    </div>
+</div>''' # 255 строка (примерно): закрывающая кавычка
     
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
