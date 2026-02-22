@@ -324,7 +324,7 @@ def favs():
                         <p style="color:var(--text-dim); margin-bottom:20px;">${{item.desc}}</p>
                         <div class="card-meta">
                             <span class="version-tag">${{item.ver}}</span>
-                            <button class="heart-btn liked" data-id="${{fav.id}}" onclick="event.stopPropagation(); updateFavs('${{fav.id}}', '${{item.name}}'); location.reload();">❤</button>
+                            <button class="heart-btn liked" data-id="${{fav.id}}" onclick="event.stopPropagation(); updateFavs('${{fav.id}}', '${{item.name}}'); location.reload();">&#10084;</button>
                         </div>
                     </div>`;
                 }});
@@ -349,7 +349,7 @@ def detail(id):
             <div class="detail-view" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
                 <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                     <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
-                    <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">❤</button>
+                    <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">&#10084;</button>
                 </div>
 
                 <h1 style="font-size:3rem; margin:0;">{item['name']}</h1>
