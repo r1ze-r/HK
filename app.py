@@ -348,7 +348,7 @@ def detail(id):
         <div class="container" style="padding-top: 20px;">
             <div class="detail-view" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
                 <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                    <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">← Назад</a>
+                    <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">&#8592; Назад</a>
                     <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">&#10084;</button>
                 </div>
 
