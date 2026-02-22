@@ -243,8 +243,9 @@ def get_nav(page):
 @app.route('/')
 def home():
     cards_html = ""
-for key, val in DATABASE.items():
-        # 248 строка: должна иметь 8 пробелов (или 2 таба) от края
+    # Вот здесь должен быть отступ (4 пробела)!
+    for key, val in DATABASE.items():
+        # А здесь уже 8 пробелов от края
         cards_html += f'''
 <div class="cheat-card" onclick="window.location.href='/cheat/{key}'">
     <h3>{val['name']}</h3>
@@ -252,7 +253,16 @@ for key, val in DATABASE.items():
     <div class="card-meta">
         <span class="version-tag">{val['ver']}</span>
     </div>
-</div>''' # 255 строка (примерно): закрывающая кавычка
+</div>'''
+    
+    # Return тоже должен быть внутри функции (4 пробела)
+    return render_template_string(f'''
+    <html><head>{STYLE}</head><body>
+        <div class="container">
+            <h1>HK HUB</h1>
+            <div class="cheat-grid">{cards_html}</div>
+        </div>
+    </body></html>''')
     
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
