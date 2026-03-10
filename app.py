@@ -127,7 +127,7 @@ STYLE = '''
     /* Кнопки текстом в правом углу */
     .nav-links {
         position: absolute;
-        right: 20px;
+        right: 0px;
         display: flex;
         gap: 25px;
     }
@@ -218,7 +218,7 @@ STYLE = '''
 '''
 
 def get_nav(page):
-    # Определяем, какая кнопка активна
+    # Если мы на странице чита, подсвечиваем "Главная" или ничего
     home_active = "active" if page == "home" else ""
     favs_active = "active" if page == "favs" else ""
     
@@ -242,51 +242,51 @@ def get_nav(page):
 def home():
     cards_html = ""
     for key, val in DATABASE.items():
-        # Генерируем теги для каждой карточки
         tags_html = "".join([f'<span class="tag">{t}</span>' for t in val.get('tags', [])])
-        
+        # Добавляем id и onclick для перехода и лайков
         cards_html += f'''
         <div class="cheat-card" onclick="window.location.href='/cheat/{key}'">
-            <div class="tag-container">
-                {tags_html}
-            </div>
+            <div class="tag-container">{tags_html}</div>
             <h3>{val['name']}</h3>
             <p style="color:var(--text-dim); margin-bottom:20px;">{val['desc']}</p>
             <div class="card-meta">
                 <span class="version-tag">{val['ver']}</span>
-                <button class="heart-btn" data-id="{key}" onclick="event.stopPropagation(); updateFavs('{key}', '{val['name']}')">&#10084;</button>
+                <button class="heart-btn" onclick="event.stopPropagation(); updateFavs('{key}', '{val['name']}')">&#10084;</button>
             </div>
-        </div>'''
-    
-    # ОДИН return со всей структурой
+        </div>
+        '''
+
     return render_template_string(f'''
     <html>
-    <head>
-        <title>HK HUB - Каталог</title>
-        {STYLE}
-    </head>
-    <body>
-        <div class="bg-glow"></div>
-        {get_nav("home")}
-        
-        <div class="tg-anchor">
-            <a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a>
-        </div>
+        <head>
+            {STYLE}
+        </head>
+        <body>
+            <div class="bg-glow"></div>
+            
+            {get_nav("home")}
 
-        <div class="container">
-            <div class="hero">
-                <h1>Каталог HK Hub</h1>
-                <div class="search-wrapper">
-                    <input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск читов...">
+            <div class="container">
+                <div class="hero">
+                    <h1>Каталог HK Hub</h1>
+                    <div class="search-wrapper">
+                        <input type="text" id="mainSearch" class="search-input" placeholder="Поиск читов..." oninput="search()">
+                    </div>
+                </div>
+
+                <div class="cheat-grid" id="cheatGrid">
+                    {cards_html}
                 </div>
             </div>
-            <div class="cheat-grid" id="cheatGrid">
-                {cards_html}
+
+            <div class="tg-anchor">
+                <a href="https://t.me/your_channel" class="tg-btn">Telegram</a>
             </div>
-        </div>
-        {SCRIPTS if 'SCRIPTS' in globals() else ''}
-    </body>
-    </html>''')
+
+            {SCRIPTS}
+        </body>
+    </html>
+    ''')
 
 @app.route('/favs')
 def favs():
