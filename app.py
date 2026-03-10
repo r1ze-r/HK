@@ -242,20 +242,28 @@ def get_nav(page):
 def home():
     cards_html = ""
     for key, val in DATABASE.items():
-        tags_html = "".join([f'<span class="tag">{t}</span>' for t in val.get('tags', [])])
-        # Добавляем id и onclick для перехода и лайков
+        # Выносим данные, чтобы не было проблем с кавычками внутри f-строки
+        name = val.get('name', 'Без названия')
+        desc = val.get('desc', '')
+        ver = val.get('ver', '')
+        tags = val.get('tags', [])
+        
+        tags_html = "".join([f'<span class="tag">{t}</span>' for t in tags])
+        
+        # Используем одинарные кавычки снаружи, чтобы внутри спокойно юзать двойные
         cards_html += f'''
         <div class="cheat-card" onclick="window.location.href='/cheat/{key}'">
             <div class="tag-container">{tags_html}</div>
-            <h3>{val['name']}</h3>
-            <p style="color:var(--text-dim); margin-bottom:20px;">{val['desc']}</p>
+            <h3>{name}</h3>
+            <p style="color:var(--text-dim); margin-bottom:20px;">{desc}</p>
             <div class="card-meta">
-                <span class="version-tag">{val['ver']}</span>
-                <button class="heart-btn" onclick="event.stopPropagation(); updateFavs('{key}', '{val['name']}')">&#10084;</button>
+                <span class="version-tag">{ver}</span>
+                <button class="heart-btn" onclick="event.stopPropagation(); updateFavs('{key}', '{name}')">&#10084;</button>
             </div>
         </div>
         '''
 
+    # Чтобы Flask не ругался на f-строку и HTML, собираем всё максимально аккуратно
     return render_template_string(f'''
     <html>
         <head>
@@ -280,7 +288,7 @@ def home():
             </div>
 
             <div class="tg-anchor">
-                <a href="https://t.me/your_channel" class="tg-btn">Telegram</a>
+                <a href="https://t.me/kaelixdev" class="tg-btn">Telegram</a>
             </div>
 
             {SCRIPTS}
