@@ -49,7 +49,6 @@ DATABASE = {
 }
 
 
-# --- FULL PORSCHE EDITION STYLES (Тот самый стиль) ---
 STYLE = '''
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -64,16 +63,10 @@ STYLE = '''
         --text-dim: #888888;
         --tg-color: #24A1DE;
         --green: #2ecc71;
-        --glass: rgba(20, 20, 20, 0.7);
         --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * { 
-        margin: 0; 
-        padding: 0; 
-        box-sizing: border-box; 
-        -webkit-tap-highlight-color: transparent; 
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
         background-color: var(--bg);
@@ -82,12 +75,7 @@ STYLE = '''
         line-height: 1.6;
         overflow-x: hidden;
         min-height: 100vh;
-        scrollbar-width: thin;
-        scrollbar-color: var(--accent) var(--bg);
     }
-
-    body::-webkit-scrollbar { width: 6px; }
-    body::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
     .bg-glow {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -95,18 +83,22 @@ STYLE = '''
         z-index: -1;
     }
 
+    /* --- ОБНОВЛЕННЫЙ ХЕДЕР (ЧИСТЫЙ СТИЛЬ) --- */
     header {
-        position: sticky; top: 0; z-index: 1000;
-        background: var(--glass);
-        backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--card-border);
-        padding: 15px 0;
+        position: relative;
+        z-index: 1000;
+        background: transparent;
+        padding: 40px 0 20px 0; /* Отступ сверху */
     }
 
     .nav-container {
-        max-width: 1200px; margin: 0 auto;
-        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
         padding: 0 20px;
+        display: flex;
+        justify-content: center; /* Центруем логотип */
+        align-items: center;
+        position: relative;
     }
 
     .logo {
@@ -117,14 +109,11 @@ STYLE = '''
         transition: var(--transition);
     }
 
-    .logo:hover { transform: scale(1.02); }
-
     .logo-img {
         width: 45px;
         height: 45px;
         border-radius: 12px;
         object-fit: cover;
-        box-shadow: 0 0 20px var(--accent-glow);
         border: 1px solid var(--card-border);
     }
 
@@ -135,26 +124,33 @@ STYLE = '''
         color: white;
     }
 
-    .nav-links { display: flex; gap: 15px; }
+    /* Кнопки текстом в правом углу */
+    .nav-links {
+        position: absolute;
+        right: 20px;
+        display: flex;
+        gap: 25px;
+    }
 
     .nav-btn {
-        padding: 12px 28px; border-radius: 14px;
-        text-decoration: none; color: var(--text-dim);
-        font-weight: 700; font-size: 1rem;
-        background: #151515; border: 1px solid #252525;
-        transition: var(--transition);
-        display: flex; align-items: center; gap: 8px;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.5); /* Тусклый белый */
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: 0.3s;
+        background: transparent;
+        border: none;
+        padding: 0;
     }
 
     .nav-btn:hover, .nav-btn.active {
-        color: white; background: #222; border-color: var(--accent);
-        box-shadow: 0 0 20px var(--accent-glow);
-        transform: translateY(-2px);
+        color: white; /* Яркий белый при наведении */
     }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+    /* --- ОСТАЛЬНЫЕ СТИЛИ (СЕТКА И КАРТОЧКИ) --- */
+    .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
 
-    .hero { text-align: center; margin-bottom: 70px; }
+    .hero { text-align: center; margin-bottom: 60px; }
     .hero h1 { 
         font-size: 4rem; font-weight: 900; letter-spacing: -2px; 
         margin-bottom: 15px; background: linear-gradient(to bottom, #fff 0%, #666 100%);
@@ -212,21 +208,10 @@ STYLE = '''
         box-shadow: 0 10px 30px rgba(36, 161, 222, 0.4); transition: 0.3s;
     }
 
-    .detail-view { display: flex; flex-direction: column; gap: 40px; }
-    .dl-section { width: 100%; padding: 40px; background: var(--card-bg); border-radius: 30px; border: 1px solid #222; }
-    .big-dl-btn {
-        background: var(--green); color: black; padding: 25px 60px;
-        border-radius: 20px; text-decoration: none; font-weight: 900;
-        font-size: 1.5rem; display: inline-block; cursor: pointer; border: none;
-        transition: var(--transition);
-    }
-    .big-dl-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(46, 204, 113, 0.4); }
-
     @media (max-width: 800px) {
-        .nav-container { flex-direction: column; gap: 15px; }
+        .nav-links { position: static; justify-content: center; margin-top: 20px; }
+        .nav-container { flex-direction: column; }
         .hero h1 { font-size: 2.5rem; }
-        .tg-anchor { left: 20px; bottom: 20px; right: 20px; }
-        .tg-btn { justify-content: center; width: 100%; }
         .cheat-grid { grid-template-columns: 1fr; }
     }
 </style>
