@@ -299,13 +299,11 @@ def favs():
         {get_nav("favs")}
         <div class="container">
             <h1 style="text-align:center; margin: 40px 0;">Понравившееся</h1>
-            <div id="favs-list" class="cheat-grid">
-                </div>
+            <div id="favs-list" class="cheat-grid"></div>
         </div>
         {SCRIPTS}
         <script>
             document.addEventListener('DOMContentLoaded', () => {{
-                // Используем ключ hk_v3_favs, как в твоих основных скриптах
                 const favs = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
                 const container = document.getElementById('favs-list');
                 const db = {db_json};
@@ -320,7 +318,6 @@ def favs():
                     const item = db[fav.id];
                     if (!item) return;
 
-                    // Верстка карточки 1 в 1 как на главной, с твоими классами
                     html += `
                     <div class="cheat-card" onclick="window.location.href='/cheat/${{fav.id}}'">
                         <div class="tag-container">
@@ -344,8 +341,12 @@ def detail(id):
     item = DATABASE.get(id)
     if not item: return "404", 404
     
-   # Видео будет одно для всех, как ты и просил
     video_file = "2026-02-16-22-54-44.mp4" 
+    # Выносим данные в переменные, чтобы Python не путался в кавычках внутри f-строки
+    name = item.get('name')
+    ver = item.get('ver')
+    desc = item.get('desc')
+    url = item.get('file_url')
 
     return render_template_string(f'''
     <html><head>{STYLE}</head><body>
@@ -355,16 +356,16 @@ def detail(id):
             <div class="detail-view" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
                 <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                     <a href="/" style="color:var(--accent); text-decoration:none; font-weight:900;">&#8592; Назад</a>
-                    <button class="heart-btn" data-id="{id}" onclick="updateFavs('{id}', '{item['name']}')">&#10084;</button>
+                    <button class="heart-btn" onclick="updateFavs('{id}', '{name}')">&#10084;</button>
                 </div>
 
-                <h1 style="font-size:3rem; margin:0;">{item['name']}</h1>
+                <h1 style="font-size:3rem; margin:0;">{name}</h1>
 
                 <div class="dl-section" style="padding: 25px; display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%;">
-                    <span class="version-tag">Версия: {item['ver']}</span>
-                    <p style="font-size:1.1rem; color:#ccc; text-align:center; margin:0;">{item['desc']}</p>
+                    <span class="version-tag">Версия: {ver}</span>
+                    <p style="font-size:1.1rem; color:#ccc; text-align:center; margin:0;">{desc}</p>
                     
-                    <button onclick="forceDownload('{item['file_url']}', '{item['name']}')" class="big-dl-btn">СКАЧАТЬ ОТ HK</button>
+                    <button onclick="forceDownload('{url}', '{name}')" class="big-dl-btn">СКАЧАТЬ ОТ HK</button>
 
                     <div style="width: 100%; max-width: 400px; border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border); margin-top: 10px;">
                         <video width="100%" height="auto" controls style="display: block;">
