@@ -246,44 +246,52 @@ def get_nav(page):
 @app.route('/')
 def home():
     cards_html = ""
-    # Вот здесь должен быть отступ (4 пробела)!
     for key, val in DATABASE.items():
-        # А здесь уже 8 пробелов от края
+        # Генерируем теги для каждой карточки
+        tags_html = "".join([f'<span class="tag">{t}</span>' for t in val.get('tags', [])])
+        
         cards_html += f'''
-<div class="cheat-card" onclick="window.location.href='/cheat/{key}'">
-    <h3>{val['name']}</h3>
-    <p>{val['desc']}</p>
-    <div class="card-meta">
-        <span class="version-tag">{val['ver']}</span>
-    </div>
-</div>'''
+        <div class="cheat-card" onclick="window.location.href='/cheat/{key}'">
+            <div class="tag-container">
+                {tags_html}
+            </div>
+            <h3>{val['name']}</h3>
+            <p style="color:var(--text-dim); margin-bottom:20px;">{val['desc']}</p>
+            <div class="card-meta">
+                <span class="version-tag">{val['ver']}</span>
+                <button class="heart-btn" data-id="{key}" onclick="event.stopPropagation(); updateFavs('{key}', '{val['name']}')">&#10084;</button>
+            </div>
+        </div>'''
     
-    # Return тоже должен быть внутри функции (4 пробела)
+    # ОДИН return со всей структурой
     return render_template_string(f'''
-    <html><head>{STYLE}</head><body>
-        <div class="container">
-            <h1>HK HUB</h1>
-            <div class="cheat-grid">{cards_html}</div>
-        </div>
-    </body></html>''')
-    
-    return render_template_string(f'''
-    <html><head>{STYLE}</head><body>
+    <html>
+    <head>
+        <title>HK HUB - Каталог</title>
+        {STYLE}
+    </head>
+    <body>
         <div class="bg-glow"></div>
         {get_nav("home")}
-        <div class="tg-anchor"><a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a></div>
+        
+        <div class="tg-anchor">
+            <a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a>
+        </div>
+
         <div class="container">
             <div class="hero">
-                
                 <h1>Каталог HK Hub</h1>
                 <div class="search-wrapper">
                     <input type="text" id="mainSearch" class="search-input" onkeyup="search()" placeholder="Поиск читов...">
                 </div>
             </div>
-            <div class="cheat-grid">{cards_html}</div>
+            <div class="cheat-grid" id="cheatGrid">
+                {cards_html}
+            </div>
         </div>
-        {SCRIPTS}
-    </body></html>''')
+        {SCRIPTS if 'SCRIPTS' in globals() else ''}
+    </body>
+    </html>''')
 
 @app.route('/favs')
 def favs():
