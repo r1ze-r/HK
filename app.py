@@ -238,6 +238,9 @@ def get_nav(page):
         <a href="/" style="display: flex; align-items: center; text-decoration: none; color: white;">
             <img src="/static/HK.png" style="height: 50px; width: auto; border-radius: 8px;">
             <span style="margin-left: 15px; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;">HK HUB</span>
+            </a>
+    </nav>
+    '''
 
 
 @app.route('/')
