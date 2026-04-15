@@ -329,7 +329,7 @@ def home():
                 </div>
             </div>
             <div class="tg-anchor">
-                <a href="https://t.me/kaelixdev" class="tg-btn">Telegram</a>
+                <a href="https://t.me/hellokilaura" class="tg-btn">Telegram</a>
             </div>
             {SCRIPTS}
         </body>
