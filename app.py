@@ -234,13 +234,7 @@ SCRIPTS = '''
         let favs = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
         const index = favs.findIndex(f => f.id === id);
         
-        if (index > -1) {
-            favs.splice(index, 1);
-            alert(name + " удален из избранного");
-        } else {
-            favs.push({id: id, name: name});
-            alert(name + " добавлен в избранное!");
-        }
+        
         
         localStorage.setItem('hk_v3_favs', JSON.stringify(favs));
         renderHearts();
