@@ -231,10 +231,17 @@ SCRIPTS = '''
     }
 
     function updateFavs(id, name) {
-        let favs = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
-        const index = favs.findIndex(f => f.id === id);
-        
-        
+    let favs = JSON.parse(localStorage.getItem('hk_v3_favs') || '[]');
+    const index = favs.findIndex(f => f.id === id);
+
+    if (index > -1) {
+        favs.splice(index, 1);
+    } else {
+        favs.push({id: id, name: name});
+    }
+
+    localStorage.setItem('hk_v3_favs', JSON.stringify(favs));
+}        
         
         localStorage.setItem('hk_v3_favs', JSON.stringify(favs));
         renderHearts();
